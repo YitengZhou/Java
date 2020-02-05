@@ -1,3 +1,4 @@
+/* 定义一个Doll类，有一个name属性和一个speak方法 */
 public class Doll{
     /** name */
     private String name;
