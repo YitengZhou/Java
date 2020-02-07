@@ -1,4 +1,7 @@
-package com.abc.dollapp;
+package doll;
+import doll.Doll;
+import doll.SmartDoll;
+
 public class AppMain
 {
     public static void main(String args[])
@@ -13,5 +16,6 @@ public class AppMain
         huanhuan.speak();
         yingying.speak();
         nini.speak();
+        
     }
 }

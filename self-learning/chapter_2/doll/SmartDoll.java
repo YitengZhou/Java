@@ -3,8 +3,8 @@
 * 本程序采用GPL协议，你可以从以下网址获得该协议内容
 * www.test.com
 */
-package com.abc.dollapp.doll.extend;
-import com.abc.dollapp.Doll;
+package doll;
+import doll.Doll;
 
 /**
  * <p><strong>SmartDoll</strong> 代表只智能。</p>
@@ -28,7 +28,7 @@ public class SmartDoll extends Doll
         super(name);
     }
     /**
-     * 构造只能
+     * 构造智能
      * @param word 默认说的话
      */
     public SmartDoll(String name, String word)
@@ -39,7 +39,7 @@ public class SmartDoll extends Doll
     /**
      * 获得默认的话
      * @return 返回默认说的话
-     * @see #setword
+     * @see #getWord
      * @deprecated 该方法已经被废弃
      */
     public String getWord()
@@ -49,7 +49,7 @@ public class SmartDoll extends Doll
     /**
      * 设置默认情况下说的话
      * @param word 默认情况下说的话
-     * @see #getword
+     * @see #setWord
      * @since 2.0
      */
     public void setWord(String word)
@@ -68,20 +68,9 @@ public class SmartDoll extends Doll
     {
         if (this.word!=null)
         {
-            try {
-                speak(word);
-            }catch(Exception e){}
-        }
-        else
-        {super.speak();}
-    }
-    public void speak()
-    {
-        if (this.word!=null)
-        {
             try{
                 speak(word);
-            }catch(Exception){}
+            }catch(Exception e){}
         }
         else{
             super.speak();
@@ -92,11 +81,10 @@ public class SmartDoll extends Doll
      * @return 智能
      * @exception Exception 如果word参数为null，就抛出异常
      */
-    pubilc String speak(String word) throws Exception{
-        if (word==null){
+    public String speak(String word) throws Exception{
+        if (word==null)
             throw new Exception("不知道该说啥");
-            System.out.println(word);
-            return word;
-        }
+        System.out.println(word);
+        return word;
     }
 }
