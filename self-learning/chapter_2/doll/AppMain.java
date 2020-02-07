@@ -16,6 +16,5 @@ public class AppMain
         huanhuan.speak();
         yingying.speak();
         nini.speak();
-        
     }
 }

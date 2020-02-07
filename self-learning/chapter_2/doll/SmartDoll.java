@@ -58,10 +58,10 @@ public class SmartDoll extends Doll
     }
     /**
      * <ul>
-     * <li> 如果{@link #word word 成员变量}不为null。
-     *      就调用{@link#speak(String)speak(String)方法}</li>
-     * <li> 如果{@link #word word 成员变量}为null。
-     *      就调用{@link com.abc.dollapp.doll#speak()super.speak()方法}</li>
+     * <li> 如果{@link #word word 成员变量}不为null,
+     *      就调用{@link #speak(String)speak(String)方法}</li>
+     * <li> 如果{@link #word word 成员变量}为null,
+     *      就调用{@link doll.Doll#speak()super.speak()方法}</li>
      * </ul>
      */
     public void speak()
