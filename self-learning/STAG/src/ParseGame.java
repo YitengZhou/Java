@@ -1,23 +1,21 @@
-import com.alexmerz.graphviz.ParseException;
-import com.alexmerz.graphviz.Parser;
-import com.alexmerz.graphviz.objects.Edge;
-import com.alexmerz.graphviz.objects.Graph;
-import com.alexmerz.graphviz.objects.Node;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+
 
 public class ParseGame {
     private ArrayList<Location> totalLocation = new ArrayList<>();
     private HashMap<Entity,String> totalEntities = new HashMap<>();
     private HashMap<String,String> gameMap = new HashMap<>();
+    private ArrayList<Actions> totalActions = new ArrayList<>();
 
     public ParseGame(String entityFilename, String actionFilename) throws IOException {
-        parseEntity(entityFilename);
-
+        ParseEntity parseEntity = new ParseEntity(entityFilename);
+        totalLocation = parseEntity.getTotalLocation();
+        totalEntities = parseEntity.getTotalEntities();
+        gameMap = parseEntity.getGameMap();
+        /** test the function of parseEntity()
         System.out.println("Read " + entityFilename + " OK");
         System.out.println("There are " + totalLocation.size() + " locations:");
         for (int j=0;j<totalLocation.size();j++) {
@@ -26,52 +24,73 @@ public class ParseGame {
         System.out.println("start -> " + gameMap.get("start"));
         for (Entity e : totalEntities.keySet()){
             System.out.println(e.getName() + " in " + totalEntities.get(e));
-        }
+        }*/
+        ParseAction parseAction = new ParseAction(actionFilename);
+        totalActions = parseAction.getTotalActions();
+        addStandardAction();
+
+        /** test the function of parseActions()
+         System.out.println(totalActions.get(2).getTriggers().contains("drink"));
+         System.out.println(totalActions.size());
+
+         for (int i=0;i<totalActions.size();i++) {
+             System.out.println(totalActions.get(i).getTriggers());
+             System.out.println(totalActions.get(i).getNarration());
+             if (totalActions.get(i).getTriggers().contains("inv")){
+                 System.out.println(totalActions.get(i).getNarration());
+             }
+         }*/
     }
 
-    private void parseEntity (String entityFilename) throws IOException{
-        try {
-            Parser parser = new Parser();
-            FileReader reader = new FileReader(entityFilename);
-            parser.parse(reader);
-            ArrayList<Graph> graphs = parser.getGraphs();
-            ArrayList<Graph> firstSubGraphs = graphs.get(0).getSubgraphs();
-            // First layer identified the different between Locations and paths
-            for(Graph first : firstSubGraphs){
-                ArrayList<Graph> secondSubGraphs = first.getSubgraphs();
-                // Second layer identified the different Locations
-                for (Graph second : secondSubGraphs){
-                    ArrayList<Node> nodeLocation = second.getNodes(false);
-                    Node nLocation = nodeLocation.get(0);
-                    totalLocation.add(new Location(nLocation.getId().getId(),nLocation.getAttribute("description")));
-                    ArrayList<Graph> thirdGraphs = second.getSubgraphs();
-                    // Third layer identified the items in that Location
-                    for (Graph third : thirdGraphs) {
-                        ArrayList<Node> nodesEnt = third.getNodes(false);
-                        for (Node nEnt : nodesEnt) {
-                            if (new String("artefacts").equals(third.getId().getId())){
-                                totalEntities.put(new Artefact(nEnt.getId().getId(),nEnt.getAttribute("description")),nLocation.getId().getId());
-                            }
-                            else if (new String("furniture").equals(third.getId().getId())){
-                                totalEntities.put(new Furniture(nEnt.getId().getId(),nEnt.getAttribute("description")),nLocation.getId().getId());
-                            }
-                            else if (new String("characters").equals(third.getId().getId())){
-                                totalEntities.put(new Character(nEnt.getId().getId(),nEnt.getAttribute("description")),nLocation.getId().getId());
-                            }
-                        }
-                    }
-                }
+    private void addStandardAction(){
+        // Inventory
+        HashSet<String> standardActionInv = new HashSet<>();
+        standardActionInv.add("inventory");
+        standardActionInv.add("inv");
+        totalActions.add(new Actions(
+                standardActionInv,
+                null,
+                null,
+                null,
+                "Lists all of the artefacts"));
 
-                // Set the game map via paths
-                ArrayList<Edge> edges = first.getEdges();
-                for (Edge e : edges){
-                    gameMap.put(e.getSource().getNode().getId().getId(),e.getTarget().getNode().getId().getId());
-                }
-            }
-        } catch (FileNotFoundException fnfe) {
-            System.out.println(fnfe);
-        } catch (ParseException pe) {
-            System.out.println(pe);
-        }
+        // Get
+        HashSet<String> standardActionGet = new HashSet<>();
+        standardActionGet.add("get");
+        totalActions.add(new Actions(
+                standardActionGet,
+                null,
+                null,
+                null,
+                "Pick up an artefact from current location"));
+
+        // Drop
+        HashSet<String> standardActionDrop = new HashSet<>();
+        standardActionDrop.add("drop");
+        totalActions.add(new Actions(standardActionDrop,
+                null,
+                null,
+                null,
+                "Puts down an artefact"));
+
+        // Goto
+        HashSet<String> standardActionGoto = new HashSet<>();
+        standardActionGoto.add("goto");
+        totalActions.add(new Actions(
+                standardActionGoto,
+                null,
+                null,
+                null,
+                "move to another location"));
+
+        // Look
+        HashSet<String> standardActionLook = new HashSet<>();
+        standardActionLook.add("look");
+        totalActions.add(new Actions(
+                standardActionLook,
+                null,
+                null,
+                null,
+                "reports entities and paths"));
     }
 }
