@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class ParseEntity {
     final private ArrayList<Location> totalLocation = new ArrayList<>();
-    final private HashMap<Entity,String> totalEntities = new HashMap<>();
+    final private HashMap<Entity,String> totalEntities = new HashMap<>();//??switch
     final private HashMap<String,String> gameMap = new HashMap<>();
     public ParseEntity(String entityFilename) throws IOException {
         try {

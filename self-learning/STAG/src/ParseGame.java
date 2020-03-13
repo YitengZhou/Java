@@ -9,6 +9,7 @@ public class ParseGame {
     private HashMap<Entity,String> totalEntities = new HashMap<>();
     private HashMap<String,String> gameMap = new HashMap<>();
     private ArrayList<Actions> totalActions = new ArrayList<>();
+    private Location currentlocation = totalLocation.get(0);
 
     public ParseGame(String entityFilename, String actionFilename) throws IOException {
         ParseEntity parseEntity = new ParseEntity(entityFilename);
@@ -92,5 +93,21 @@ public class ParseGame {
                 null,
                 null,
                 "reports entities and paths"));
+    }
+
+    public ArrayList<Actions> getTotalActions() {
+        return totalActions;
+    }
+
+    public HashMap<Entity, String> getTotalEntities() {
+        return totalEntities;
+    }
+
+    public ArrayList<Location> getTotalLocation() {
+        return totalLocation;
+    }
+
+    public HashMap<String, String> getGameMap() {
+        return gameMap;
     }
 }

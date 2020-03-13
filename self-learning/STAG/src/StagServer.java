@@ -10,6 +10,8 @@ import java.util.*;
 
 class StagServer
 {
+    private Controller controller;
+
     public static void main(String args[])
     {
         if(args.length != 2) System.out.println("Usage: java StagServer <entity-file> <action-file>");
@@ -20,6 +22,7 @@ class StagServer
     {
         try {
             ParseGame parseGame = new ParseGame(entityFilename,actionFilename);
+            this.controller = new Controller(parseGame);
             ServerSocket ss = new ServerSocket(portNumber);
             System.out.println("Server Listening");
             while(true) acceptNextConnection(ss);
@@ -48,8 +51,6 @@ class StagServer
     {
         String line = in.readLine();
         out.write("You said... " + line + "\n");
-        System.out.println("in:"+in);
-        System.out.println("out:"+out);
     }
 
 }
