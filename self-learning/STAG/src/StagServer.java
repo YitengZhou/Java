@@ -58,7 +58,7 @@ class StagServer
             Player newPlayer = new Player(player[0],"");
             controller.setCurrentPlayer(newPlayer);
         }
-        if (inputText.length>1){
+        if (inputText.length > 1){
             out.write(controller.handleIncomingCommand(inputText));
         }
     }

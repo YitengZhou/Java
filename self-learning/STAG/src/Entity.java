@@ -2,11 +2,13 @@ public class Entity {
     private String name;
     private String description;
     private String owner;
+    private boolean isMovable;
 
     public Entity(String inputName, String inputDescription){
         name = inputName;
         description = inputDescription;
         owner = null;
+        isMovable = false;
     }
 
     public String getName() {
@@ -18,6 +20,10 @@ public class Entity {
     }
 
     public String getOwner(){
-        return null;
+        return owner;
+    }
+    
+    public Boolean getIsMovable(){
+        return isMovable;
     }
 }

@@ -15,12 +15,12 @@ public class Text {
         return "You need to said something.";
     }
 
-    public String getText(String trigger, String subject)
+
+    public String getText(String trigger, String subject,boolean isGet)
     {
         if (trigger.equals("get")){
-            return getGetText(subject);
+            return getGetText(subject,isGet);
         }
-
         return "You need to said something.";
     }
 
@@ -50,12 +50,26 @@ public class Text {
     }
 
     // Get Action
-    private String getGetText(String entityName){
-        if (entityName != null){
+    /*
+    private String getGetText(String entityName,boolean isGet){
+        if (isGet){
             return "Successful, You get " + entityName + "!";
         }
         else {
             return "In this location, I can't get this entity.";
+        }
+    }*/
+    private String getGetText(String entityName,boolean isGet) {
+        if (isGet) {
+            return "Successful, You get " + entityName + "!";
+        } else {
+            for (Entity entity : currentGame.getGameWorld().getTotalEntities().keySet()) {
+                if (entity.getName().equals(entityName) &&
+                        !entity.getIsMovable()) {
+                    return "You can't get " + entityName + " because it is immovable.";
+                }
+            }
+            return "In this location, I can't get this " + entityName + " entity.";
         }
     }
 }

@@ -1,9 +1,11 @@
 public class Artefact extends Entity {
 
     private String owner;
+    private boolean isMovable;
 
     public Artefact(String inputName, String inputDescription) {
         super(inputName, inputDescription);
+        isMovable = true;
     }
 
     public void setOwner(String ownerPlayer) {
@@ -12,5 +14,10 @@ public class Artefact extends Entity {
 
     public String getOwner() {
         return owner;
-    } //可能不需要
+    }
+
+    @Override
+    public Boolean getIsMovable() {
+        return isMovable;
+    }
 }
