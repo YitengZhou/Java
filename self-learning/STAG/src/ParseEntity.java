@@ -12,7 +12,8 @@ import java.util.HashMap;
 
 public class ParseEntity {
     final private ArrayList<Location> totalLocation = new ArrayList<>();
-    final private HashMap<Entity,String> totalEntities = new HashMap<>();//??switch
+    //Every entity is unique, so build a HashMap to link entity-location
+    final private HashMap<Entity,String> totalEntities = new HashMap<>();
     final private HashMap<String,String> gameMap = new HashMap<>();
     public ParseEntity(String entityFilename) throws IOException {
         try {
@@ -64,7 +65,7 @@ public class ParseEntity {
         return totalLocation;
     }
 
-    public HashMap<Entity,String> getTotalEntities(){
+    public HashMap<Entity, String> getTotalEntities() {
         return totalEntities;
     }
 

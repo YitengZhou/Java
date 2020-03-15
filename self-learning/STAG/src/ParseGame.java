@@ -6,10 +6,9 @@ import java.util.HashSet;
 
 public class ParseGame {
     private ArrayList<Location> totalLocation = new ArrayList<>();
-    private HashMap<Entity,String> totalEntities = new HashMap<>();
+    private HashMap<Entity, String> totalEntities = new HashMap<>();
     private HashMap<String,String> gameMap = new HashMap<>();
     private ArrayList<Actions> totalActions = new ArrayList<>();
-    private Location currentlocation = totalLocation.get(0);
 
     public ParseGame(String entityFilename, String actionFilename) throws IOException {
         ParseEntity parseEntity = new ParseEntity(entityFilename);

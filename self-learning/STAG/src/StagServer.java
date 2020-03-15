@@ -50,7 +50,17 @@ class StagServer
     private void processNextCommand(BufferedReader in, BufferedWriter out) throws IOException
     {
         String line = in.readLine();
-        out.write("You said... " + line + "\n");
+        String[] inputText = line.split(" ");
+        String[] player = inputText[0].split(":");
+
+        if (controller.getCurrentPlayer() == null ||
+        !controller.getCurrentPlayer().getName().equals(player[0])){
+            Player newPlayer = new Player(player[0],"");
+            controller.setCurrentPlayer(newPlayer);
+        }
+        if (inputText.length>1){
+            out.write(controller.handleIncomingCommand(inputText));
+        }
     }
 
 }
