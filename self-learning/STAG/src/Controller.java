@@ -144,18 +144,8 @@ public class Controller {
                         consumeEntity = entity;
                     }
                 }
-                gameWorld.getTotalEntities().remove(consumeEntity); //delete or hashmap变consumed
-                /*
-                for (Iterator<Entity> iter = gameWorld.getTotalEntities().keySet().iterator();
-                     iter.hasNext();){
-                    Entity entity = iter.next();
-                    if (action.getConsumed().contains(entity.getName()) &&
-                            gameWorld.getTotalEntities().get(entity).equals(currentPlayer.getName())){
-                        gameWorld.getTotalEntities().remove(entity);
-                        break;
-                    }
-                }*/
-                // add path or entity
+                gameWorld.getTotalEntities().remove(consumeEntity);
+
                 Iterator<String> produceEntity = action.getProduced().iterator();
                 while (produceEntity.hasNext()) {
                     boolean locationFlag = false;

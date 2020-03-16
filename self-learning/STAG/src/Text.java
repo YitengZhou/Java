@@ -39,36 +39,24 @@ public class Text {
 
     // Look Action
     private String getLookText(){
-        String playerOutput = "You are in location:\n\t" + currentGame.getCurrentLocation().getName() + "\n";
+        String playerOutput = "You are in location:\n\t[" + currentGame.getCurrentLocation().getName() + "]\n";
         if (currentGame.getGameWorld().getTotalEntities().containsValue(currentGame.getCurrentLocation().getName())){
             playerOutput = playerOutput.concat("In this room, entity list:\n");
             for (Entity entity : currentGame.getGameWorld().getTotalEntities().keySet()){
                 if (currentGame.getGameWorld().getTotalEntities().get(entity)
                         .equals(currentGame.getCurrentLocation().getName()) && entity.getOwner() == null){
-                    playerOutput = playerOutput.concat(entity.getClass().getTypeName() + ":\t");
+                    playerOutput = playerOutput.concat(entity.getClass().getTypeName() + ":\t[");
                     playerOutput = playerOutput.concat(entity.getName() +
-                            "\t(" + entity.getDescription() + ")\n");
+                            "]\t(" + entity.getDescription() + ")\n");
                 }
             }
         }
         if (currentGame.getGameWorld().getGameMap().containsKey(currentGame.getCurrentLocation().getName())){
             playerOutput = playerOutput.concat("This location could move to:\npath:");
-            /*Set<Map.Entry<String, String>> allSet = null;
-            allSet = currentGame.getGameWorld().getGameMap().entrySet();
-            Iterator<Map.Entry<String,String>> iterLocation =null;
-            iterLocation = allSet.iterator();
-            while (iterLocation.hasNext()){
-                Map.Entry<String,String> path = iterLocation.next();
-                System.out.println(path.getKey() + path.getValue());
-                if (path.getKey().equals(currentGame.getCurrentLocation().getName())){
-                    playerOutput = playerOutput.concat("\t" + path.getKey() + " -> " + path.getValue() + "\n");
-                }
-            }*/
             for (String cLocation : currentGame.getGameWorld().getGameMap().keySet()){
                 if (currentGame.getCurrentLocation().getName().equals(cLocation))
                     playerOutput = playerOutput.concat("\t" + cLocation + " -> " +
                             currentGame.getGameWorld().getGameMap().get(cLocation)+ "\n");
-                System.out.println(cLocation);
             }
         }
         return playerOutput;
@@ -76,15 +64,15 @@ public class Text {
 
     private String getGetText(String entityName,boolean isGet) {
         if (isGet) {
-            return "Successful, You get " + entityName + "!";
+            return "Successful, You get [" + entityName + "]";
         } else {
             for (Entity entity : currentGame.getGameWorld().getTotalEntities().keySet()) {
                 if (entity.getName().equals(entityName) &&
                         !entity.getIsMovable()) {
-                    return "You can't get " + entityName + " because it is immovable.";
+                    return "You can't get [" + entityName + "] because it is immovable.";
                 }
             }
-            return "In this location, you can't get this " + entityName + " entity.";
+            return "In this location, you can't get this [" + entityName + "] entity.";
         }
     }
 
@@ -94,8 +82,8 @@ public class Text {
         for (Entity entity : currentGame.getGameWorld().getTotalEntities().keySet()){
             if (currentGame.getGameWorld().getTotalEntities().get(entity)
                     .equals(currentGame.getCurrentPlayer().getName())){
-                invText = invText.concat("\t" + entity.getName() +
-                        "\t(" + entity.getDescription() + ")\n");
+                invText = invText.concat("\t[" + entity.getName() +
+                        "]\t(" + entity.getDescription() + ")\n");
                 isEmpty = false;
             }
         }
@@ -109,19 +97,25 @@ public class Text {
 
     private String getDropText(String entityName,boolean isDrop) {
         if (isDrop) {
-            return "Successful, You drop " + entityName +
-                    " to current location : " + currentGame.getCurrentLocation().getName();
+            return "Successful, You drop [" + entityName +
+                    "] to current location [" + currentGame.getCurrentLocation().getName() +"].";
         } else {
-            return "you can't drop " + entityName + " entity.";
+            return "you can't drop [" + entityName + "] entity.";
         }
     }
 
     private String getMoveText(String newLocation,boolean isMove) {
         if (isMove){
-            return "Successful, You goto next location: " + newLocation + "!";
+            return "Successful, You goto next location [" + newLocation + "]!";
         }
         else {
-            return "You can't goto " + newLocation + " location. Try another location again.";
+            if (newLocation.equals(currentGame.getCurrentLocation().getName())){
+                return "You have already been in [" + newLocation + "] location. Try another location again.";
+            }
+            else{
+                return "You can't goto -> [" + newLocation + "] location. Try another location again.";
+            }
+
         }
     }
 }
