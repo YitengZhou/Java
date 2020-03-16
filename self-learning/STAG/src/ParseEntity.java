@@ -9,12 +9,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 
 public class ParseEntity {
     final private ArrayList<Location> totalLocation = new ArrayList<>();
     //Every entity is unique, so build a HashMap to link entity-location
     final private HashMap<Entity,String> totalEntities = new HashMap<>();
-    final private HashMap<String,String> gameMap = new HashMap<>();
+    final private IdentityHashMap<String,String> gameMap = new IdentityHashMap<>();
+
     public ParseEntity(String entityFilename) throws IOException {
         try {
             Parser parser = new Parser();
@@ -69,7 +71,7 @@ public class ParseEntity {
         return totalEntities;
     }
 
-    public HashMap<String,String> getGameMap(){
+    public IdentityHashMap<String, String> getGameMap() {
         return gameMap;
     }
 }

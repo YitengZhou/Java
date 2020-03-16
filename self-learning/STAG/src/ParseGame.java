@@ -2,12 +2,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 
 
 public class ParseGame {
     private ArrayList<Location> totalLocation = new ArrayList<>();
     private HashMap<Entity, String> totalEntities = new HashMap<>();
-    private HashMap<String,String> gameMap = new HashMap<>();
+    private IdentityHashMap<String,String> gameMap = new IdentityHashMap<>();
     private ArrayList<Actions> totalActions = new ArrayList<>();
 
     public ParseGame(String entityFilename, String actionFilename) throws IOException {
@@ -106,7 +107,7 @@ public class ParseGame {
         return totalLocation;
     }
 
-    public HashMap<String, String> getGameMap() {
+    public IdentityHashMap<String, String> getGameMap() {
         return gameMap;
     }
 }
