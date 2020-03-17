@@ -11,6 +11,7 @@ import java.util.*;
 class StagServer
 {
     private Controller controller;
+    private ArrayList<Player> totalPlayer;
 
     public static void main(String args[])
     {
@@ -23,6 +24,7 @@ class StagServer
         try {
             ParseGame parseGame = new ParseGame(entityFilename,actionFilename);
             this.controller = new Controller(parseGame);
+            this.totalPlayer = controller.getTotalPlayer();
             ServerSocket ss = new ServerSocket(portNumber);
             System.out.println("Server Listening");
             while(true) acceptNextConnection(ss);
@@ -51,16 +53,33 @@ class StagServer
     {
         String line = in.readLine();
         String[] inputText = line.split(" ");
-        String[] player = inputText[0].split(":");
+        String player = inputText[0].split(":")[0];
+        Player currentPlayer = getPlayer(player);
 
-        if (controller.getCurrentPlayer() == null ||
-        !controller.getCurrentPlayer().getName().equals(player[0])){
-            Player newPlayer = new Player(player[0],"");
-            controller.setCurrentPlayer(newPlayer);
-        }
         if (inputText.length > 1){
             out.write(controller.handleIncomingCommand(inputText));
         }
+
+        if (currentPlayer.getHealthLevel() == 0){
+            inputText[1] = "death";
+            out.write(controller.handleIncomingCommand(inputText));
+        }
+        currentPlayer.setPosition(controller.getCurrentLocation()); 
     }
 
+    private Player getPlayer(String playerName)
+    {
+        for (Player player : totalPlayer){
+            if (player.getName().equals(playerName)){
+                controller.setCurrentPlayer(player);
+                controller.setCurrentLocation(player.getPosition());
+                return player;
+            }
+        }
+        Player newPlayer = new Player(playerName,"");
+        controller.setCurrentPlayer(newPlayer);
+        controller.addNewPlayer(newPlayer);
+        controller.setCurrentLocation(newPlayer.getPosition());
+        return newPlayer;
+    }
 }

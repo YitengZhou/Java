@@ -6,28 +6,51 @@ public class Controller {
     private ParseGame gameWorld;
     private Location currentLocation;
     private Player currentPlayer;
-    //PlayerList
+    private ArrayList<Player> totalPlayer;
 
     public Controller(ParseGame parseGame){
         this.gameWorld = parseGame;
         this.currentLocation = gameWorld.getTotalLocation().get(0);
         this.currentPlayer = null;
+        this.totalPlayer = new ArrayList<>();
     }
 
-    public ParseGame getGameWorld() {
+    public ParseGame getGameWorld()
+    {
         return gameWorld;
     }
 
-    public Location getCurrentLocation() {
+    public Location getCurrentLocation()
+    {
         return currentLocation;
     }
 
-    public Player getCurrentPlayer() {
+    public void setCurrentLocation(Location currentLocation){
+        if (currentLocation == null) {
+            this.currentLocation = gameWorld.getTotalLocation().get(0);
+        }
+        else {
+            this.currentLocation = currentLocation;
+        }
+    }
+
+    public Player getCurrentPlayer()
+    {
         return currentPlayer;
     }
 
     public void setCurrentPlayer(Player newPlayer) {
         this.currentPlayer = newPlayer;
+    }
+
+    public ArrayList<Player> getTotalPlayer()
+    {
+        return totalPlayer;
+    }
+
+    public void addNewPlayer(Player newPlayer)
+    {
+        totalPlayer.add(newPlayer);
     }
 
     public String handleIncomingCommand(String[] command){
@@ -41,6 +64,13 @@ public class Controller {
         }
         else if (command[1].equals("inventory") || command[1].equals("inv")){
             return gameText.getText("inv");
+        }
+        else if (command[1].equals("health")){
+            return gameText.getText("health");
+        }
+        else if (command[1].equals("death")){
+            deathAction();
+            return gameText.getText("death");
         }
         else if (command[1].equals("drop")){
             return gameText.getText("drop",command[2],isDropEntity(command));
@@ -67,9 +97,8 @@ public class Controller {
             if (entity.getName().equals(command[2]) &&
                 gameWorld.getTotalEntities().get(entity).equals(currentLocation.getName()) &&
                 entity.getIsMovable()) {
-                gameWorld.getTotalEntities().remove(entity);
-                String[] player = command[0].split(":");
-                gameWorld.getTotalEntities().put(entity,player[0]); //需不需要强制转换
+                String player = command[0].split(":")[0];
+                gameWorld.getTotalEntities().put(entity,player);
                 return true;
             }
         }
@@ -133,16 +162,26 @@ public class Controller {
                     action.getSubjects().contains(subject) &&
                     interSubject.size() == action.getSubjects().size()
                     ){
-                /* remove entity */
+                /* remove entity and health */
+                if (action.getConsumed().contains("health")){
+                    currentPlayer.loseHealth();
+                }
                 Entity consumeEntity = null;
-                for (Entity entity : gameWorld.getTotalEntities().keySet()){
-                    if (action.getConsumed().contains(entity.getName())){
+                for (Entity entity : gameWorld.getTotalEntities().keySet()) {
+                    if (action.getConsumed().contains(entity.getName())) {
                         consumeEntity = entity;
                     }
                 }
                 gameWorld.getTotalEntities().remove(consumeEntity);
 
-                Iterator<String> produceEntity = action.getProduced().iterator();
+                HashSet<String> tempActionProduced = action.getProduced();
+
+                if (tempActionProduced.contains("health")){
+                    currentPlayer.improveHealth();
+                    tempActionProduced.remove("health");
+                }
+
+                Iterator<String> produceEntity = tempActionProduced.iterator();
                 while (produceEntity.hasNext()) {
                     boolean locationFlag = false;
                     String newEntity = produceEntity.next();
@@ -153,12 +192,30 @@ public class Controller {
                         }
                     }
                     if (!locationFlag){
-                        gameWorld.getTotalEntities().put(new Artefact(newEntity,"No more details"),currentPlayer.getName());
+                        for (Entity entity : gameWorld.getTotalEntities().keySet()){
+                            if (entity.getName().equals(newEntity) && entity.getIsMovable()){
+                                gameWorld.getTotalEntities().put(entity,currentPlayer.getName());
+                            }
+                            else if (entity.getName().equals(newEntity) && !entity.getIsMovable()){
+                                gameWorld.getTotalEntities().put(entity,currentLocation.getName());
+                            }
+                        }
                     }
                 }
                 return action;
             }
         }
         return null;
+    }
+
+    private void deathAction()
+    {
+        for (Entity entity : gameWorld.getTotalEntities().keySet()){
+            if (gameWorld.getTotalEntities().get(entity).equals(currentPlayer.getName())){
+                gameWorld.getTotalEntities().put(entity,currentLocation.getName());
+            }
+        }
+        currentPlayer.resetHealth();
+        currentLocation = gameWorld.getTotalLocation().get(0);
     }
 }

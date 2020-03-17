@@ -19,6 +19,12 @@ public class Text {
         else if (trigger.equals("inv")){
             return getInvText();
         }
+        else if (trigger.equals("health")){
+            return getHealthText();
+        }
+        else if (trigger.equals("death")){
+            return getDeathTest();
+        }
         return "You need to said something.";
     }
 
@@ -93,6 +99,15 @@ public class Text {
         }
     }
 
+    private String getHealthText() {
+        return "You health level is " + currentGame.getCurrentPlayer().getHealthLevel() +
+                ".\n(If you health level reach 0, you will lose all entities in your inventory)";
+    }
+
+    private String getDeathTest() {
+        return "\n!You health level is 0. You return the start location and lose all entities!";
+    }
+
     private String getDropText(String entityName,boolean isDrop) {
         if (isDrop) {
             return "Successful, You drop [" + entityName +
@@ -113,7 +128,6 @@ public class Text {
             else{
                 return "You can't goto -> [" + newLocation + "] location. Try another location again.";
             }
-
         }
     }
 }
