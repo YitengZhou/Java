@@ -6,6 +6,7 @@ public class Controller {
     private ParseGame gameWorld;
     private Location currentLocation;
     private Player currentPlayer;
+    //PlayerList
 
     public Controller(ParseGame parseGame){
         this.gameWorld = parseGame;
@@ -55,9 +56,7 @@ public class Controller {
             else {
                 return "I can't understand what you mean";
             }
-
         }
-        //return "I can't understand what you mean";
     }
 
     private boolean isGetEntity(String[] command){
@@ -101,7 +100,6 @@ public class Controller {
         return false;
     }
 
-    //增加物品和道路，归属
     private Actions getAction (String trigger, String subject) {
         // All entities in this location
         HashSet<String> entitiesInRoom = new HashSet<>();
@@ -157,7 +155,7 @@ public class Controller {
                         }
                     }
                     if (!locationFlag){
-                        gameWorld.getTotalEntities().put(new Artefact(newEntity,""),currentPlayer.getName());
+                        gameWorld.getTotalEntities().put(new Artefact(newEntity,"No more details"),currentPlayer.getName());
                     }
                 }
                 return action;

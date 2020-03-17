@@ -22,7 +22,10 @@ public class ParseGame {
         for (int j=0;j<totalLocation.size();j++) {
             System.out.println("\t"+totalLocation.get(j).getName());
         }
-        System.out.println("start -> " + gameMap.get("start"));
+        for (String L:gameMap.keySet()){
+            System.out.println( L + " -> " + gameMap.get(L));
+        }
+
         for (Entity e : totalEntities.keySet()){
             System.out.println(e.getName() + " in " + totalEntities.get(e));
         }*/

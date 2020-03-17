@@ -51,13 +51,11 @@ public class Text {
                 }
             }
         }
-        if (currentGame.getGameWorld().getGameMap().containsKey(currentGame.getCurrentLocation().getName())){
-            playerOutput = playerOutput.concat("This location could move to:\npath:");
-            for (String cLocation : currentGame.getGameWorld().getGameMap().keySet()){
-                if (currentGame.getCurrentLocation().getName().equals(cLocation))
-                    playerOutput = playerOutput.concat("\t" + cLocation + " -> " +
-                            currentGame.getGameWorld().getGameMap().get(cLocation)+ "\n");
-            }
+        playerOutput = playerOutput.concat("This location could move to:\npath:");
+        for (String cLocation : currentGame.getGameWorld().getGameMap().keySet()){
+            if (currentGame.getCurrentLocation().getName().equals(cLocation))
+                playerOutput = playerOutput.concat("\t" + cLocation + " -> " +
+                        currentGame.getGameWorld().getGameMap().get(cLocation)+ "\n");
         }
         return playerOutput;
     }

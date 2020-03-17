@@ -54,7 +54,7 @@ public class ParseEntity {
                 // Set the game map via paths
                 ArrayList<Edge> edges = first.getEdges();
                 for (Edge e : edges){
-                    gameMap.put(e.getSource().getNode().getId().getId(),e.getTarget().getNode().getId().getId());
+                    gameMap.put(new String(e.getSource().getNode().getId().getId()),e.getTarget().getNode().getId().getId());
                 }
             }
         } catch (FileNotFoundException fnfe) {
