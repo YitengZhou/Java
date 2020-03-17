@@ -48,6 +48,9 @@ public class Controller {
         else if (command[1].equals("goto")){
             return gameText.getText("goto",command[2],isMoveNewLocation(command));
         }
+        else if (command.length <= 2){
+            return "The input command has no related action, try again.";
+        }
         else {
             Actions tempAction = getAction(command[1],command[2]);
             if (tempAction != null){
@@ -115,30 +118,25 @@ public class Controller {
                 entitiesOnPlayer.add(entity.getName());
             }
         }
+
         for (Actions action : gameWorld.getTotalActions()){
             // Set Subject
             HashSet<String> interSubject =new HashSet<>();
             interSubject.addAll(entitiesInRoom);
-            if (action.getSubjects()!=null){
+            interSubject.addAll(entitiesOnPlayer);
+            if (action.getSubjects() != null){
                 interSubject.retainAll(action.getSubjects());
-            }
-            // Set consumed
-            HashSet<String> interConsumed =new HashSet<>();
-            interConsumed.addAll(entitiesOnPlayer);
-            if (action.getConsumed() != null){
-                interConsumed.retainAll(action.getConsumed());
             }
 
             // Trigger and subject correct and get the subject in right location
             if (action.getTriggers().contains(trigger) &&
                     action.getSubjects().contains(subject) &&
-                    interSubject.size() > 0 &&
-                    interConsumed.size() > 0){
+                    interSubject.size() == action.getSubjects().size()
+                    ){
                 /* remove entity */
                 Entity consumeEntity = null;
                 for (Entity entity : gameWorld.getTotalEntities().keySet()){
-                    if (action.getConsumed().contains(entity.getName()) &&
-                            gameWorld.getTotalEntities().get(entity).equals(currentPlayer.getName())){ //换到背包？
+                    if (action.getConsumed().contains(entity.getName())){
                         consumeEntity = entity;
                     }
                 }
