@@ -10,6 +10,7 @@ public class ParseGame {
     private HashMap<Entity, String> totalEntities = new HashMap<>();
     private IdentityHashMap<String,String> gameMap = new IdentityHashMap<>();
     private ArrayList<Actions> totalActions = new ArrayList<>();
+    private HashSet<String> standardCommands = new HashSet<>();
 
     public ParseGame(String entityFilename, String actionFilename) throws IOException {
         ParseEntity parseEntity = new ParseEntity(entityFilename);
@@ -19,76 +20,51 @@ public class ParseGame {
 
         ParseAction parseAction = new ParseAction(actionFilename);
         totalActions = parseAction.getTotalActions();
-        addStandardAction();
+        addStandardCommands();
     }
 
-    private void addStandardAction(){
+    private void addStandardCommands()
+    {
         // Inventory
-        HashSet<String> standardActionInv = new HashSet<>();
-        standardActionInv.add("inventory");
-        standardActionInv.add("inv");
-        totalActions.add(new Actions(
-                standardActionInv,
-                null,
-                null,
-                null,
-                "Lists all of the artefacts"));
-
+        standardCommands.add("inventory");
+        standardCommands.add("inv");
         // Get
-        HashSet<String> standardActionGet = new HashSet<>();
-        standardActionGet.add("get");
-        totalActions.add(new Actions(
-                standardActionGet,
-                null,
-                null,
-                null,
-                "Pick up an artefact from current location"));
-
+        standardCommands.add("get");
         // Drop
-        HashSet<String> standardActionDrop = new HashSet<>();
-        standardActionDrop.add("drop");
-        totalActions.add(new Actions(
-                standardActionDrop,
-                null,
-                null,
-                null,
-                "Puts down an artefact"));
-
+        standardCommands.add("drop");
         // Goto
-        HashSet<String> standardActionGoto = new HashSet<>();
-        standardActionGoto.add("goto");
-        totalActions.add(new Actions(
-                standardActionGoto,
-                null,
-                null,
-                null,
-                "Move to another location"));
-
+        standardCommands.add("goto");
         // Look
-        HashSet<String> standardActionLook = new HashSet<>();
-        standardActionLook.add("look");
-        totalActions.add(new Actions(
-                standardActionLook,
-                null,
-                null,
-                null,
-                "reports entities and paths"));
+        standardCommands.add("look");
+        // Health
+        standardCommands.add("health");
+        // Death
+        standardCommands.add("death");
     }
 
-    public ArrayList<Actions> getTotalActions() {
+    public ArrayList<Actions> getTotalActions()
+    {
         return totalActions;
     }
 
-    public HashMap<Entity, String> getTotalEntities() {
+    public HashMap<Entity, String> getTotalEntities()
+    {
         return totalEntities;
     }
 
-    public ArrayList<Location> getTotalLocation() {
+    public ArrayList<Location> getTotalLocation()
+    {
         return totalLocation;
     }
 
-    public IdentityHashMap<String, String> getGameMap() {
+    public IdentityHashMap<String, String> getGameMap()
+    {
         return gameMap;
+    }
+
+    public HashSet<String> getStandardCommands()
+    {
+        return standardCommands;
     }
 
     public HashSet<String> getTotalEntityNames()
@@ -99,4 +75,5 @@ public class ParseGame {
         }
         return totalEntityNames;
     }
+
 }

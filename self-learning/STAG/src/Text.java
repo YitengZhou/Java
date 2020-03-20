@@ -45,7 +45,8 @@ public class Text {
 
     // Look Action
     private String getLookText(){
-        String playerOutput = "You are in location:\n\t[" + currentGame.getCurrentLocation().getName() + "]\n";
+        String playerOutput = "You are in location:\n\t[" + currentGame.getCurrentLocation().getName() + "]\t(" +
+        currentGame.getCurrentLocation().getDescription() + ")\n";
         if (currentGame.getGameWorld().getTotalEntities().containsValue(currentGame.getCurrentLocation().getName())){
             playerOutput = playerOutput.concat("In this room, entity list:\n");
             for (Entity entity : currentGame.getGameWorld().getTotalEntities().keySet()){
@@ -55,6 +56,12 @@ public class Text {
                     playerOutput = playerOutput.concat(entity.getName() +
                             "]\t(" + entity.getDescription() + ")\n");
                 }
+            }
+        }
+        for (int i = 0;i<currentGame.getTotalPlayer().size();i++){
+            if (currentGame.getCurrentLocation().getName().equals(currentGame.getTotalPlayer().get(i).getPosition().getName()) &&
+            !currentGame.getCurrentPlayer().getName().equals(currentGame.getTotalPlayer().get(i).getName())){
+                playerOutput = playerOutput.concat("Player:\t" + currentGame.getTotalPlayer().get(i).getName() + "\n");
             }
         }
         playerOutput = playerOutput.concat("This location could move to:\npath:");

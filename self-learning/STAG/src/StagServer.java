@@ -59,14 +59,20 @@ class StagServer
         if (inputText.length > 1){
             out.write(controller.handleIncomingCommand(inputText));
         }
+        else {
+            out.write("You need type something to play this game.");
+        }
 
         if (currentPlayer.getHealthLevel() == 0){
             inputText[1] = "death";
             out.write(controller.handleIncomingCommand(inputText));
         }
-        currentPlayer.setPosition(controller.getCurrentLocation()); 
+        currentPlayer.setPosition(controller.getCurrentLocation());
     }
 
+    /** Get current player and set location (same to latest record),
+     * meaning different player could stay at different location
+     * If a new player enter into, add player to ArrayList and set location to start */
     private Player getPlayer(String playerName)
     {
         for (Player player : totalPlayer){
@@ -80,6 +86,7 @@ class StagServer
         controller.setCurrentPlayer(newPlayer);
         controller.addNewPlayer(newPlayer);
         controller.setCurrentLocation(newPlayer.getPosition());
+        newPlayer.setPosition(controller.getCurrentLocation());
         return newPlayer;
     }
 }
