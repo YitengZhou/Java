@@ -1,3 +1,4 @@
+/** This ParseEntity class could read .dot file */
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.Parser;
 import com.alexmerz.graphviz.objects.Edge;
@@ -13,9 +14,9 @@ import java.util.IdentityHashMap;
 
 public class ParseEntity {
     final private ArrayList<Location> totalLocation = new ArrayList<>();
-    //Every entity is unique, so build a HashMap to link entity-location
+    // Every entity is unique, so build a HashMap to link entity-location
     final private HashMap<Entity,String> totalEntities = new HashMap<>();
-    //Every location could have more than one path, so build a IdentityHashMap
+    // Every location could have more than one path, so build a IdentityHashMap
     final private IdentityHashMap<String,String> gameMap = new IdentityHashMap<>();
 
     public ParseEntity(String entityFilename) throws IOException {

@@ -1,4 +1,4 @@
-// Use HashSet because any name in files is unique
+/** Actions in json file. Use HashSet because any name in files is unique */
 import java.util.HashSet;
 
 public class Actions {

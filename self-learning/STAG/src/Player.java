@@ -1,3 +1,4 @@
+// Player class represent the player and is able to improve and lose health
 public class Player extends Entity {
     private int healthLevel;
     private Location position;

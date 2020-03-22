@@ -1,8 +1,8 @@
+/** Controller class could control player and location and handle incoming commands */
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-/* Control player and location and handle incoming commands */
 public class Controller {
     private ParseGame gameWorld;
     private Location currentLocation;
@@ -33,34 +33,31 @@ public class Controller {
         }
     }
 
-    public Player getCurrentPlayer()
-    {
+    public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(Player newPlayer)
-    {
+    public void setCurrentPlayer(Player newPlayer) {
         this.currentPlayer = newPlayer;
     }
 
-    public ArrayList<Player> getTotalPlayer()
-    {
+    public ArrayList<Player> getTotalPlayer() {
         return totalPlayer;
     }
 
-    public void addNewPlayer(Player newPlayer)
-    {
+    public void addNewPlayer(Player newPlayer) {
         totalPlayer.add(newPlayer);
     }
 
+    /** Handle incoming commands,
+     * firstly, identify whether commands are standard commands,
+     * secondly, identify whether commands are action commands,
+     * finally, do this action if player is meet conditions */
     public String handleIncomingCommand(String[] command){
-
         if (isStandardCommand(command)) {
             return getStandardText(command);
         }
-
         Actions action = identifyAction(command);
-
         if (action != null){
             if (isMeetConditions(action,command)){
                 doAction(action);
@@ -75,6 +72,45 @@ public class Controller {
         }
     }
 
+    /** Control standard commands, e.g. look, inv, get... */
+    private boolean isStandardCommand(String[] command) {
+        if (gameWorld.getStandardCommands().contains(command[1])){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private String getStandardText(String[] command) {
+        Text gameText = new Text(this);
+        String action = command[1];
+        // Look, inventory, inv, health and death
+        if (action.equals("look") || action.equals("inventory")
+                ||action.equals("inv")|| action.equals("health")){
+            return gameText.getText(action);
+        }
+        else if (action.equals("death")){
+            deathAction();
+            return gameText.getText("death");
+        }
+        // Get X, drop X and goto X
+        if (command.length>2){
+            String entity = command [2];
+            if (action.equals("get")){
+                return gameText.getText("get",entity,isGetEntity(command));
+            }
+            else if (action.equals("drop")){
+                return gameText.getText("drop",entity,isDropEntity(command));
+            }
+            else if (action.equals("goto")){
+                return gameText.getText("goto",entity,isMoveNewLocation(command));
+            }
+        }
+        return "Game standard command needs more input. e.g. get key/ drop key/ goto forest.";
+    }
+
+    /** Control get, e.g. get key, get potion */
     private boolean isGetEntity(String[] command){
         for (Entity entity : gameWorld.getTotalEntities().keySet()){
             if (entity.getName().equals(command[2]) &&
@@ -88,11 +124,11 @@ public class Controller {
         return false;
     }
 
+    /** Control drop, e.g. drop axe, drop potion */
     private boolean isDropEntity(String[] command){
         for (Entity entity : gameWorld.getTotalEntities().keySet()){
             if (gameWorld.getTotalEntities().get(entity).equals(currentPlayer.getName()) &&
                     entity.getName().equals(command[2])){
-                gameWorld.getTotalEntities().remove(entity);
                 gameWorld.getTotalEntities().put(entity,currentLocation.getName());
                 return true;
             }
@@ -100,6 +136,7 @@ public class Controller {
         return false;
     }
 
+    /** Control goto, e.g. goto forest, goto cabin */
     private boolean isMoveNewLocation (String[] command) {
         for (String source : gameWorld.getGameMap().keySet()){
             if (currentLocation.getName().equals(source) &&
@@ -115,8 +152,8 @@ public class Controller {
         return false;
     }
 
-    private void deathAction()
-    {
+    /** Control death if health level is 0 */
+    private void deathAction() {
         for (Entity entity : gameWorld.getTotalEntities().keySet()){
             if (gameWorld.getTotalEntities().get(entity).equals(currentPlayer.getName())){
                 gameWorld.getTotalEntities().put(entity,currentLocation.getName());
@@ -126,53 +163,8 @@ public class Controller {
         currentLocation = gameWorld.getTotalLocation().get(0);
     }
 
-    private boolean isStandardCommand(String[] command)
-    {
-        if (gameWorld.getStandardCommands().contains(command[1])){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    private String getStandardText(String[] command)
-    {
-        Text gameText = new Text(this);
-        String action = command[1];
-        // Look, inventory, inv, health and death
-        if (action.equals("look") || action.equals("inventory")
-                ||action.equals("inv")|| action.equals("health")){
-            return gameText.getText(action);
-        }
-        else if (action.equals("death")){
-            deathAction();
-            return gameText.getText("death");
-        }
-
-
-        // Get X, drop X and goto X
-        if (command.length>2){
-            String entity = command [2];
-            if (action.equals("get")){
-                return gameText.getText("get",entity,isGetEntity(command));
-            }
-            else if (action.equals("drop")){
-                return gameText.getText("drop",entity,isDropEntity(command));
-            }
-            else if (action.equals("goto")){
-                return gameText.getText("goto",entity,isMoveNewLocation(command));
-            }
-            else if (action.equals("gamecheat")){
-                gameCheat(entity);
-                return gameText.getText("gamecheat");
-            }
-        }
-        return "Game standard command needs more input. e.g. get key/ drop key/ goto forest.";
-    }
-
-    private HashSet<String> getEntities (String samePlace)
-    {
+    /** Get all entities in same location or person */
+    private HashSet<String> getEntities (String samePlace) {
         HashSet<String> entitiesInSamePlace = new HashSet<>();
         for (Entity entity : gameWorld.getTotalEntities().keySet()){
             if (gameWorld.getTotalEntities().get(entity).equals(samePlace)){
@@ -182,6 +174,7 @@ public class Controller {
         return entitiesInSamePlace;
     }
 
+    /** Identify what the action is in Json file */
     private Actions identifyAction(String[] command) {
         for (int i = 1;i < command.length;i++){
             for (Actions action : gameWorld.getTotalActions()){
@@ -193,6 +186,7 @@ public class Controller {
         return null;
     }
 
+    /** Identify whether all subjects are in their inventory or at the current location */
     private boolean isMeetConditions(Actions action,String[] command){
         boolean subjectFlag = false;
         for (int i = 1;i < command.length;i++){
@@ -216,30 +210,14 @@ public class Controller {
         return  false;
     }
 
-    private void doAction(Actions action)
-    {
+    /** Control consumed and produced action */
+    private void doAction(Actions action) {
         doConsumedAction(action.getConsumed());
         doProducedAction(action.getProduced());
     }
 
-    private HashSet<String> hasHealthInConsumed(HashSet<String> setConsumed)
-    {
-        /* If health in consumed, the player health level will decrease 1 */
-        currentPlayer.loseHealth();
-        setConsumed.remove("health");
-        return setConsumed;
-    }
-
-    private HashSet<String> hasHealthInProduced(HashSet<String> setProduced)
-    {
-        /* If health in produced, the player health level will increase 1 */
-        currentPlayer.improveHealth();
-        setProduced.remove("health");
-        return setProduced;
-    }
-
-    private void doConsumedAction(HashSet<String> setConsumed)
-    {
+    /** Control consumed action*/
+    private void doConsumedAction(HashSet<String> setConsumed) {
         HashSet<String> actionConsumed = new HashSet<>();
         actionConsumed.addAll(setConsumed);
         if (actionConsumed.contains("health")){
@@ -256,8 +234,15 @@ public class Controller {
         }
     }
 
-    private void doProducedAction(HashSet<String> setProduced)
-    {
+    private HashSet<String> hasHealthInConsumed(HashSet<String> setConsumed) {
+        /* If health in consumed, the player health level will decrease 1 */
+        currentPlayer.loseHealth();
+        setConsumed.remove("health");
+        return setConsumed;
+    }
+
+    /** Control produced action */
+    private void doProducedAction(HashSet<String> setProduced) {
         HashSet<String> actionProduced = new HashSet<>();
         actionProduced.addAll(setProduced);
         if (actionProduced.contains("health")){
@@ -275,8 +260,14 @@ public class Controller {
         }
     }
 
-    private boolean produceLocation(String newlocation)
-    {
+    private HashSet<String> hasHealthInProduced(HashSet<String> setProduced) {
+        /* If health in produced, the player health level will increase 1 */
+        currentPlayer.improveHealth();
+        setProduced.remove("health");
+        return setProduced;
+    }
+
+    private boolean produceLocation(String newlocation) {
         for (Location location : gameWorld.getTotalLocation()){
             if (location.getName().equals(newlocation)){
                 gameWorld.getGameMap().put(new String(currentLocation.getName()),location.getName());
@@ -286,8 +277,7 @@ public class Controller {
         return false;
     }
 
-    private void produceEntity(String newEntity)
-    {
+    private void produceEntity(String newEntity) {
         for (Entity entity : gameWorld.getTotalEntities().keySet()){
             if (entity.getName().equals(newEntity) && entity.getIsMovable()){
                 gameWorld.getTotalEntities().put(entity,currentPlayer.getName());
@@ -296,11 +286,5 @@ public class Controller {
                 gameWorld.getTotalEntities().put(entity,currentLocation.getName());
             }
         }
-    }
-
-    private void gameCheat(String entityName)
-    {
-        Artefact newEntity = new Artefact(entityName,"From game cheating");
-        gameWorld.getTotalEntities().put(newEntity,currentPlayer.getName());
     }
 }

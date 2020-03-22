@@ -1,13 +1,12 @@
+/** Entity class include artefact, character, furniture, location and player class */
 public class Entity {
     private String name;
     private String description;
-    private String owner;
     private boolean isMovable;
 
     public Entity(String inputName, String inputDescription){
         name = inputName;
         description = inputDescription;
-        owner = null;
         isMovable = false;
     }
 
@@ -17,10 +16,6 @@ public class Entity {
 
     public String getDescription() {
         return description;
-    }
-
-    public String getOwner(){
-        return owner;
     }
     
     public Boolean getIsMovable(){

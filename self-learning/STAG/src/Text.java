@@ -1,22 +1,18 @@
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
+/** Text class represent all text in game */
 public class Text {
+
     private Controller currentGame;
 
     public Text (Controller current){
         this.currentGame = current;
     }
 
-    public String getText(String trigger)
-    {
-        // Look Action
+    /** Get look, inv, health and death text */
+    public String getText(String trigger) {
         if (trigger.equals("look")){
             return getLookText();
         }
-        else if (trigger.equals("inv")){
+        else if (trigger.equals("inv") || trigger.equals("inventory")){
             return getInvText();
         }
         else if (trigger.equals("health")){
@@ -25,15 +21,11 @@ public class Text {
         else if (trigger.equals("death")){
             return getDeathTest();
         }
-        else if (trigger.equals("gamecheat")){
-            return getCheatTest();
-        }
         return "You need to said something.";
     }
 
-
-    public String getText(String trigger, String subject,boolean result)
-    {
+    /** Get drop, get and goto text */
+    public String getText(String trigger, String subject,boolean result) {
         if (trigger.equals("get")){
             return getGetText(subject,result);
         }
@@ -46,27 +38,33 @@ public class Text {
         return "You need to said something.";
     }
 
-    // Look Action
+    /** Look text includes current location,
+     * all entities and all players in this place
+     * and paths from this location */
     private String getLookText(){
+        // Current location
         String playerOutput = "You are in location:\n\t[" + currentGame.getCurrentLocation().getName() + "]\t(" +
         currentGame.getCurrentLocation().getDescription() + ")\n";
+        // All entities in this place
         if (currentGame.getGameWorld().getTotalEntities().containsValue(currentGame.getCurrentLocation().getName())){
             playerOutput = playerOutput.concat("In this room, entity list:\n");
             for (Entity entity : currentGame.getGameWorld().getTotalEntities().keySet()){
                 if (currentGame.getGameWorld().getTotalEntities().get(entity)
-                        .equals(currentGame.getCurrentLocation().getName()) && entity.getOwner() == null){
+                        .equals(currentGame.getCurrentLocation().getName())){
                     playerOutput = playerOutput.concat(entity.getClass().getTypeName() + ":\t[");
                     playerOutput = playerOutput.concat(entity.getName() +
                             "]\t(" + entity.getDescription() + ")\n");
                 }
             }
         }
+        // All paths from this location
         for (int i = 0;i<currentGame.getTotalPlayer().size();i++){
             if (currentGame.getCurrentLocation().getName().equals(currentGame.getTotalPlayer().get(i).getPosition().getName()) &&
             !currentGame.getCurrentPlayer().getName().equals(currentGame.getTotalPlayer().get(i).getName())){
                 playerOutput = playerOutput.concat("Player:\t" + currentGame.getTotalPlayer().get(i).getName() + "\n");
             }
         }
+        // All players in this place
         playerOutput = playerOutput.concat("This location could move to:\npath:");
         for (String cLocation : currentGame.getGameWorld().getGameMap().keySet()){
             if (currentGame.getCurrentLocation().getName().equals(cLocation))
@@ -78,7 +76,7 @@ public class Text {
 
     private String getGetText(String entityName,boolean isGet) {
         if (isGet) {
-            return "Successful, You get [" + entityName + "]";
+            return "Successful, You get [" + entityName + "].";
         } else {
             for (Entity entity : currentGame.getGameWorld().getTotalEntities().keySet()) {
                 if (entity.getName().equals(entityName) &&
@@ -116,10 +114,6 @@ public class Text {
 
     private String getDeathTest() {
         return "\n!You health level is 0. You return the start location and lose all entities!";
-    }
-
-    private String getCheatTest() {
-        return "You use cheating code!\nYou get what you want in your inventory.";
     }
 
     private String getDropText(String entityName,boolean isDrop) {

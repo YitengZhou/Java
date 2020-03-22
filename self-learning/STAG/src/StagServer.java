@@ -49,8 +49,7 @@ class StagServer
         }
     }
 
-    private void processNextCommand(BufferedReader in, BufferedWriter out) throws IOException
-    {
+    private void processNextCommand(BufferedReader in, BufferedWriter out) throws IOException {
         String line = in.readLine();
         String[] inputText = line.split(" ");
         String player = inputText[0].split(":")[0];
@@ -73,8 +72,7 @@ class StagServer
     /** Get current player and set location (same to latest record),
      * meaning different player could stay at different location
      * If a new player enter into, add player to ArrayList and set location to start */
-    private Player getPlayer(String playerName)
-    {
+    private Player getPlayer(String playerName) {
         for (Player player : totalPlayer){
             if (player.getName().equals(playerName)){
                 controller.setCurrentPlayer(player);

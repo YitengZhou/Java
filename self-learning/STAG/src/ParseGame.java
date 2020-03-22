@@ -1,9 +1,9 @@
+/** This ParseGame class could creat gameWorld from dot and json files */
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-
 
 public class ParseGame {
     private ArrayList<Location> totalLocation = new ArrayList<>();
@@ -23,8 +23,7 @@ public class ParseGame {
         addStandardCommands();
     }
 
-    private void addStandardCommands()
-    {
+    private void addStandardCommands() {
         // Inventory
         standardCommands.add("inventory");
         standardCommands.add("inv");
@@ -44,33 +43,27 @@ public class ParseGame {
         standardCommands.add("gamecheat");
     }
 
-    public ArrayList<Actions> getTotalActions()
-    {
+    public ArrayList<Actions> getTotalActions() {
         return totalActions;
     }
 
-    public HashMap<Entity, String> getTotalEntities()
-    {
+    public HashMap<Entity, String> getTotalEntities() {
         return totalEntities;
     }
 
-    public ArrayList<Location> getTotalLocation()
-    {
+    public ArrayList<Location> getTotalLocation() {
         return totalLocation;
     }
 
-    public IdentityHashMap<String, String> getGameMap()
-    {
+    public IdentityHashMap<String, String> getGameMap() {
         return gameMap;
     }
 
-    public HashSet<String> getStandardCommands()
-    {
+    public HashSet<String> getStandardCommands() {
         return standardCommands;
     }
 
-    public HashSet<String> getTotalEntityNames()
-    {
+    public HashSet<String> getTotalEntityNames() {
         HashSet<String> totalEntityNames = new HashSet<>();
         for (Entity entity : totalEntities.keySet()){
             totalEntityNames.add(entity.getName());
