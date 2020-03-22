@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 /** Text class represent all text in game */
 public class Text {
 
@@ -43,33 +45,34 @@ public class Text {
      * and paths from this location */
     private String getLookText(){
         // Current location
-        String playerOutput = "You are in location:\n\t[" + currentGame.getCurrentLocation().getName() + "]\t(" +
-        currentGame.getCurrentLocation().getDescription() + ")\n";
+        Location cLocation = currentGame.getCurrentLocation();
+        HashMap<Entity,String> allEntities = currentGame.getGameWorld().getTotalEntities();
+        String playerOutput = "You are in location:\n\t[" + cLocation.getName() + "]\t(" +
+                cLocation.getDescription() + ")\n";
         // All entities in this place
-        if (currentGame.getGameWorld().getTotalEntities().containsValue(currentGame.getCurrentLocation().getName())){
+        if (allEntities.containsValue(cLocation.getName())){
             playerOutput = playerOutput.concat("In this room, entity list:\n");
-            for (Entity entity : currentGame.getGameWorld().getTotalEntities().keySet()){
-                if (currentGame.getGameWorld().getTotalEntities().get(entity)
-                        .equals(currentGame.getCurrentLocation().getName())){
+            for (Entity entity : allEntities.keySet()){
+                if (allEntities.get(entity).equals(cLocation.getName())){
                     playerOutput = playerOutput.concat(entity.getClass().getTypeName() + ":\t[");
                     playerOutput = playerOutput.concat(entity.getName() +
                             "]\t(" + entity.getDescription() + ")\n");
                 }
             }
         }
-        // All paths from this location
+        // All players from this location
         for (int i = 0;i<currentGame.getTotalPlayer().size();i++){
-            if (currentGame.getCurrentLocation().getName().equals(currentGame.getTotalPlayer().get(i).getPosition().getName()) &&
+            if (cLocation.getName().equals(currentGame.getTotalPlayer().get(i).getPosition().getName()) &&
             !currentGame.getCurrentPlayer().getName().equals(currentGame.getTotalPlayer().get(i).getName())){
                 playerOutput = playerOutput.concat("Player:\t" + currentGame.getTotalPlayer().get(i).getName() + "\n");
             }
         }
-        // All players in this place
+        // All paths in this place
         playerOutput = playerOutput.concat("This location could move to:\npath:");
-        for (String cLocation : currentGame.getGameWorld().getGameMap().keySet()){
-            if (currentGame.getCurrentLocation().getName().equals(cLocation))
-                playerOutput = playerOutput.concat("\t" + cLocation + " -> " +
-                        currentGame.getGameWorld().getGameMap().get(cLocation)+ "\n");
+        for (String cLocationName : currentGame.getGameWorld().getGameMap().keySet()){
+            if (cLocation.getName().equals(cLocationName))
+                playerOutput = playerOutput.concat("\t" + cLocationName + " -> " +
+                        currentGame.getGameWorld().getGameMap().get(cLocationName)+ "\n");
         }
         return playerOutput;
     }

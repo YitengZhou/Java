@@ -91,7 +91,7 @@ public class Controller {
             return gameText.getText(action);
         }
         else if (action.equals("death")){
-            deathAction();
+            doDeathAction();
             return gameText.getText("death");
         }
         // Get X, drop X and goto X
@@ -153,7 +153,7 @@ public class Controller {
     }
 
     /** Control death if health level is 0 */
-    private void deathAction() {
+    private void doDeathAction() {
         for (Entity entity : gameWorld.getTotalEntities().keySet()){
             if (gameWorld.getTotalEntities().get(entity).equals(currentPlayer.getName())){
                 gameWorld.getTotalEntities().put(entity,currentLocation.getName());
