@@ -149,6 +149,8 @@ public class Controller {
             deathAction();
             return gameText.getText("death");
         }
+
+
         // Get X, drop X and goto X
         if (command.length>2){
             String entity = command [2];
@@ -160,6 +162,10 @@ public class Controller {
             }
             else if (action.equals("goto")){
                 return gameText.getText("goto",entity,isMoveNewLocation(command));
+            }
+            else if (action.equals("gamecheat")){
+                gameCheat(entity);
+                return gameText.getText("gamecheat");
             }
         }
         return "Game standard command needs more input. e.g. get key/ drop key/ goto forest.";
@@ -290,5 +296,11 @@ public class Controller {
                 gameWorld.getTotalEntities().put(entity,currentLocation.getName());
             }
         }
+    }
+
+    private void gameCheat(String entityName)
+    {
+        Artefact newEntity = new Artefact(entityName,"From game cheating");
+        gameWorld.getTotalEntities().put(newEntity,currentPlayer.getName());
     }
 }

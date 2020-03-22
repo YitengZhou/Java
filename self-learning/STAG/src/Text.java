@@ -25,6 +25,9 @@ public class Text {
         else if (trigger.equals("death")){
             return getDeathTest();
         }
+        else if (trigger.equals("gamecheat")){
+            return getCheatTest();
+        }
         return "You need to said something.";
     }
 
@@ -113,6 +116,10 @@ public class Text {
 
     private String getDeathTest() {
         return "\n!You health level is 0. You return the start location and lose all entities!";
+    }
+
+    private String getCheatTest() {
+        return "You use cheating code!\nYou get what you want in your inventory.";
     }
 
     private String getDropText(String entityName,boolean isDrop) {
