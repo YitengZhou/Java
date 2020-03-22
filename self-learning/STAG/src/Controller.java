@@ -174,7 +174,15 @@ public class Controller {
         return entitiesInSamePlace;
     }
 
-    /** Identify what the action is in Json file */
+    /** Identify what the action is in Json file,
+     * In this controller, it can identify trigger and subject in the command
+     * if you have the trapdoor key in your inv and you are in cabin,
+     * you can input the following commands:
+     * open trapdoor with key
+     * open trapdoor
+     * trapdoor open
+     * open trapdoor please
+     * I really need to open this trapdoor etc. */
     private Actions identifyAction(String[] command) {
         for (int i = 1;i < command.length;i++){
             for (Actions action : gameWorld.getTotalActions()){
