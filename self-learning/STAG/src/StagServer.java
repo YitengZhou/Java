@@ -1,9 +1,3 @@
-import com.alexmerz.graphviz.ParseException;
-import com.alexmerz.graphviz.Parser;
-import com.alexmerz.graphviz.objects.Edge;
-import com.alexmerz.graphviz.objects.Graph;
-import com.alexmerz.graphviz.objects.Node;
-
 import java.io.*;
 import java.net.*;
 import java.util.*;

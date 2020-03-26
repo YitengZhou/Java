@@ -39,8 +39,6 @@ public class ParseGame {
         standardCommands.add("health");
         // Death
         standardCommands.add("death");
-        // Game cheating for test and quickly game
-        standardCommands.add("gamecheat");
     }
 
     public ArrayList<Actions> getTotalActions() {

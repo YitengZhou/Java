@@ -2,6 +2,14 @@
     "actions": [
 
         {
+            "triggers": ["open"],
+            "subjects": ["tree"],
+            "consumed": ["health"],
+            "produced": [],
+            "narration": "tree fire"
+        },
+
+        {
             "triggers": ["open", "unlock"],
             "subjects": ["trapdoor", "key"],
             "consumed": ["key"],

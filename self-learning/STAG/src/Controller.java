@@ -57,15 +57,15 @@ public class Controller {
         if (isStandardCommand(command)) {
             return getStandardText(command);
         }
-        Actions action = identifyAction(command);
-        if (action != null){
-            if (isMeetConditions(action,command)){
-                doAction(action);
-                return action.getNarration();
+        ArrayList<Actions> allAction = identifyAction(command);
+        if (!allAction.isEmpty()){
+            for (int i = 0;i < allAction.size();i++){
+                if (isMeetConditions(allAction.get(i),command)){
+                    doAction(allAction.get(i));
+                    return allAction.get(i).getNarration();
+                }
             }
-            else{
-                return "You don't have enough entities in you inventory or are not in the right location.";
-            }
+            return "You don't have enough entities in you inventory or are not in the right location.";
         }
         else {
             return "You can't trigger the action, please check [trigger] word again";
@@ -183,15 +183,16 @@ public class Controller {
      * trapdoor open
      * open trapdoor please
      * I really need to open this trapdoor etc. */
-    private Actions identifyAction(String[] command) {
+    private ArrayList<Actions> identifyAction(String[] command) {
+        ArrayList<Actions> sameTriggerActions = new ArrayList<>();
         for (int i = 1;i < command.length;i++){
             for (Actions action : gameWorld.getTotalActions()){
                 if (action.getTriggers().contains(command[i])){
-                    return action;
+                    sameTriggerActions.add(action);
                 }
             }
         }
-        return null;
+        return sameTriggerActions;
     }
 
     /** Identify whether all subjects are in their inventory or at the current location */
