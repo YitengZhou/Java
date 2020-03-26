@@ -182,7 +182,8 @@ public class Controller {
      * open trapdoor
      * trapdoor open
      * open trapdoor please
-     * I really need to open this trapdoor etc. */
+     * I really need to open this trapdoor
+     * open trapdoor and open others (same trigger word) etc. */
     private ArrayList<Actions> identifyAction(String[] command) {
         ArrayList<Actions> sameTriggerActions = new ArrayList<>();
         for (int i = 1;i < command.length;i++){
