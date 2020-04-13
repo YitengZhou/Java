@@ -4,6 +4,8 @@ import java.util.*;
 
 class DBServer
 {
+    final static char EOT = 4;
+
     public static void main(String args[])
     {
         /*if(args.length != 2) System.out.println("Usage: java StagServer <entity-file> <action-file>");
@@ -15,6 +17,7 @@ class DBServer
     {
         try {
             ServerSocket ss = new ServerSocket(portNumber);
+            System.out.println("" + EOT + "\n");
             System.out.println("Server Listening");
             while(true) acceptNextConnection(ss);
         } catch(IOException ioe) {
@@ -39,7 +42,10 @@ class DBServer
     }
 
     private void processNextCommand(BufferedReader in, BufferedWriter out) throws IOException {
-        String line = in.readLine();
-        out.write(line);
+        String incoming = in.readLine();
+        while(! incoming.contains("" + EOT + "")) {
+            System.out.println(incoming);
+            incoming = in.readLine();
+        }
     }
 }
