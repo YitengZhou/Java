@@ -1,0 +1,18 @@
+// Use
+    use; // 没有错误信息
+    use ; // 没有错误信息
+    use name;
+    use name name;
+
+// Create
+    create; // 没有错误信息
+    create ;
+    create table name;
+    create database name;
+    create table;
+    create name;
+    create name name;
+    create table xxx a, b, c);
+    create table xxx (a, b, c;
+    create table xxx (a, b, c);
+
