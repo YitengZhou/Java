@@ -1,18 +1,114 @@
-// Use
+// general
+   /n
+   space
+   ;
+    ;
+   //多个((或者))
+
+// USE
     use; // 没有错误信息
     use ; // 没有错误信息
     use name;
     use name name;
 
-// Create
+// CREATE
     create; // 没有错误信息
     create ;
     create table name;
     create database name;
+    create database xxx (a);
+    create database xxx (a, b, c); //应该出错-已解决
     create table;
     create name;
     create name name;
+    create table xxx (a ); //出错-已解决
+    create table xxx ( a );
+    create table xxx ( a);
+    create table xxx ( a) ; //直接报错-已解决
+    create table xxx (a b, c); //应该出错-已解决
     create table xxx a, b, c);
     create table xxx (a, b, c;
     create table xxx (a, b, c);
+    create table xxx (a,b,c,d,e,f,g);
+    create table xxx (a b, c, d, e, f, g, h);
+    create table xxx (a, b, c, d, e, f, g, h);
 
+    CreAte table xxx (a, b, c, d, e, f, g, h);
+    CreAte TAble xxx (a, b, c, d, e, f, g, h);
+
+// DROP
+    drop; // 没有错误信息
+    drop ;
+    drop xxx;
+    drop xxx xxx;
+    drop table xxx;
+    drop database xxx;
+    drop table xxx xxx;
+
+// ALTER
+    alter table XXX drop aaa;
+    alter table XXX add aaa;
+    alter database XXX add aaa;
+    alter; //没有错误信息
+    alter table;
+    alter table XXX;
+    alter table XXX drop;
+    alter table XXX drop aaa bbbb;
+
+// Insert
+    insert into xxx values (a,b,c);
+    insert into xxx values (a, b, c);
+    insert into xxx values (a b, c); //应该不报错
+    insert intos xxx values (a,b,c);
+    insert into xxx valuess (a,b,c);
+    insert into xxx values;
+    insert into xxx;
+    insert into;
+    insert;
+
+// Select
+    select * from xxx;
+    select a,b from xxx;
+    select * from xxx where xxx sss;
+    select a,b from xxx where xxx sss;
+    select a, b from xxx where xxx sss;
+    select a, b, sdfs from xxx where xxx sss;
+    select a, b, c, d, e, f, g, z from xxx where xxx sss;
+    select a, b, c, d, e, f, g, z from xxx where a = b AND b = c;
+
+    select a, b sdfs from xxx where xxx sss;
+    select ** from xxx where xxx sss; //可能有**项
+    select * from xxx w;
+    select a,b xxx;
+    select a, b, sdfs xxx where xxx sss;
+    select a, b, c, d e, f, g, z from xxx where xxx sss;
+    select a, b, c, d, e, f, g, z from xxx where;
+    select a, b, c, d, e, f, g, z from xxx where ;
+
+    SELECT * FROM actors WHERE (awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian'));
+    SELECT * FROM actors WHERE (awards > 5);
+
+    SELECT * FROM actors WHERE (awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian');
+    SELECT * FROM actors WHERE (awards > 5) AND (nationality == 'British') OR (nationality == 'Australian');
+    SELECT * FROM actors WHERE (awards > 5) (nationality == 'British') OR (nationality == 'Australian');
+    SELECT * FROM actors WHERE (awards > 5) (nationality == 'British') (nationality == 'Australian');
+
+// update
+    UPDATE actors SET age = 45 WHERE name == 'Hugh Grant';
+    UPDATE actors SET age = 45 WHERE name == 'HughGrant'; // 字符串中的空格,可将空格替换为其他字符
+    UPDATE actors SET age = 45 , zhou = 20 WHERE name == 'HughGrant';
+    UPDATE actors SET age = 45 , zhou = 20 WHERE (awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian'));
+
+// Delete
+    DELETE FROM marks WHERE name == 'Dave';
+    DELETE FROM marks WHERE mark < 40;
+    DELETE FROM actors WHERE name == 'James Caan'; // 字符串中的空格
+
+// JOIN
+   JOIN movies AND roles ON id AND movie_id;
+   JOIN movies roles ON id AND movie_id;
+   JOIN movies AND roles id AND movie_id;
+   JOIN movies AND roles ON id movie_id;
+// 错误以后要返回，重新核查
+
+// 大小写

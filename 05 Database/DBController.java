@@ -17,13 +17,19 @@ public class DBController {
         DBParsing parsing = new DBParsing(incoming);
         for (CommandType com : parsing.getTotalCommandType()){
             System.out.println(com.getClass().getName() + " : "+ com.getIsCommandType());
-            if (!com.getParsingError().equals("")) System.out.println(com.getParsingError());
+            if (!com.getParsingError().equals("") ) System.out.println(com.getParsingError());
         }
     }
 
     /* Check whether the entered query is valid */
     public boolean checkQueryIsValid(String incoming){
+        if (incoming.length()<2) {
+            return false;
+        }
         if (incoming.charAt(incoming.length()-1) != ';'){
+            return false;
+        }
+        if (incoming.charAt(incoming.length()-1) == ';' && incoming.charAt(incoming.length()-2) == ' '){
             return false;
         }
         return true;
