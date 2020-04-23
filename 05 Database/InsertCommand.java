@@ -1,3 +1,4 @@
+//可能可以改成AttributeList类中的方法
 public class InsertCommand extends CommandType{
 
     public InsertCommand(String incoming){
@@ -8,7 +9,7 @@ public class InsertCommand extends CommandType{
     private boolean checkInsert(String incoming){
         String[] incomingArray = incoming.split(" ");
         // Check Insert
-        if (incomingArray[0].equals("insert")){
+        if (incomingArray[0].toLowerCase().equals("insert")){
             super.setCommandType("insert");
         }
         else{
@@ -17,17 +18,17 @@ public class InsertCommand extends CommandType{
         // Check whether INSERT command has correct elements
         int length = incomingArray.length;
         if ( length < 5){
-            super.setParsingError("Incorrect elements in INSERT command, expect >=5");
+            super.setParsingError("Incorrect elements in INSERT command, expect >= 5");
             return false;
         }
         // Check INTO
-        if (!incomingArray[1].equals("into")){
-            super.setParsingError("Unexpected token [" + incomingArray[1] + "], should be 'INTO'");
+        if (!incomingArray[1].toLowerCase().equals("into")){
+            super.setParsingError("Unexpected token [" + incomingArray[1] + "] in INSERT, should be 'INTO'");
             return false;
         }
         // Check VALUES
-        if (!incomingArray[3].equals("values")){
-            super.setParsingError("Unexpected token [" + incomingArray[3] + "], should be 'VALUES'");
+        if (!incomingArray[3].toLowerCase().equals("values")){
+            super.setParsingError("Unexpected token [" + incomingArray[3] + "] in INSERT, should be 'VALUES'");
             return false;
         }
         // Check <ValueList>
@@ -44,7 +45,7 @@ public class InsertCommand extends CommandType{
             super.setParsingError("Incorrectly ( or )");
             return false;
         }
-        for (int i = leftFlag;i<incoming.length();i++){ //可能需要更改
+        for (int i = leftFlag;i<incoming.length();i++){ //可能需要更改,字符串问题
             if (incoming.charAt(i) == ' ' &&
                     Character.isLetter(incoming.charAt(i - 1)) &&
                     Character.isLetter(incoming.charAt(i + 1))){

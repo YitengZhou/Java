@@ -31,9 +31,9 @@ class DBServer
             try{
                 String incoming= in.readLine();
                 System.out.println("Server get message: " + incoming);
-                controller.handleQuery(incoming.toLowerCase()); //小写或者函数鉴别小写
+                controller.handleQuery(incoming);
                 // 处理字符串中的空格
-                if (controller.getQueryStatues()){
+                if (controller.getParseStatues()){
                     incoming = "valid\n" + incoming + '\n'; // 注意\n
                 }
                 out.write(incoming + EOT + "\n");

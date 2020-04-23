@@ -8,20 +8,26 @@ public class DeleteCommand extends CommandType{
     private boolean checkDelete(String incoming){
         String[] incomingArray = incoming.split(" ");
         // Check DELETE
-        if (incomingArray[0].equals("delete")){
+        if (incomingArray[0].toLowerCase().equals("delete")){
             super.setCommandType("delete");
         }
         else{
             return false;
         }
+        // Check whether DELETE command has correct elements
+        int length = incomingArray.length;
+        if ( length < 5){
+            super.setParsingError("Incorrect elements in DELETE command, expect >= 5");
+            return false;
+        }
         // Check FROM
-        if (!incomingArray[1].equals("from")){
-            super.setParsingError("Unexpected token [" + incomingArray[1] + "], should be 'FROM'");
+        if (!incomingArray[1].toLowerCase().equals("from")){
+            super.setParsingError("Unexpected token [" + incomingArray[1] + "] in DELETE, should be 'FROM'");
             return false;
         }
         // Check WHERE
-        if (!incomingArray[3].equals("where")){
-            super.setParsingError("Unexpected token [" + incomingArray[3] + "], should be 'WHERE'");
+        if (!incomingArray[3].toLowerCase().equals("where")){
+            super.setParsingError("Unexpected token [" + incomingArray[3] + "] in DELETE, should be 'WHERE'");
             return false;
         }
         // Check CONDITION

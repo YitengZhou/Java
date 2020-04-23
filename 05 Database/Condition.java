@@ -12,13 +12,11 @@ public class Condition {
         for (int i = 0;i<incomingArray.length;i++){
             // Check operator
             if (i % 4 == 1 && !isOperator(incomingArray[i])){
-                System.out.println(incomingArray[i]);
                 errorMessage = "Incorrectly operator in CONDITION";
                 return false;
             }
             // Check AND/OR in CONDITION
             if (i % 4 == 3 && !isAndOr(incomingArray[i])){
-                System.out.println(incomingArray[i]);
                 errorMessage = "Incorrectly AND/OR in CONDITION";
                 return false;
             }
@@ -36,7 +34,7 @@ public class Condition {
     }
 
     private boolean isOperator(String str){
-        if (str.equals("==")||str.equals(">")||str.equals("<")|| str.equals("like") ||
+        if (str.equals("==")||str.equals(">")||str.equals("<")|| str.toLowerCase().equals("like") ||
                 str.equals(">=")||str.equals("<=")||str.equals("!=")){
             return true;
         }
@@ -44,7 +42,7 @@ public class Condition {
     }
 
     private boolean isAndOr(String str){
-        if (str.equals("and") || str.equals("or")){
+        if (str.toLowerCase().equals("and") || str.toLowerCase().equals("or")){
             return true;
         }
         return false;

@@ -1,6 +1,11 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class CreateCommand extends CommandType{
+
+    private String[] createArray;
+    private String tableAttribute;
 
     public CreateCommand(String incoming){
         boolean isCreateCommand = checkCreate(incoming);
@@ -49,8 +54,50 @@ public class CreateCommand extends CommandType{
                 super.setParsingError(list.getErrorMessage());
                 return false;
             }
+            this.tableAttribute = incoming.substring(leftFlag+1,rightFlag);
         }
+        this.createArray = incomingArray;
         return true;
+    }
+
+    public void executeCommand(DBController controller) throws IOException {
+        if (createArray[1].toLowerCase().equals("database")){
+            createDatabase(controller);
+        }
+        else {
+            createTable(controller);
+        }
+    }
+
+    private void createDatabase(DBController controller)throws IOException{
+        File databaseFolder = new File("./database" +File.separator + createArray[2]);
+        if (!databaseFolder.exists()){
+            databaseFolder.mkdir();
+            controller.setExecuteStatus(true); // 创建成功？
+        }
+        else{
+            controller.setExecuteStatus(false);
+            controller.setErrorMessage("You have already CREATE this database : " + createArray[2]);
+        }
+    }
+
+    private void createTable(DBController controller) throws IOException {
+        String database = controller.getCurrentDatabase();
+        if (database!=null){
+            if (tableAttribute==null){
+                Table newTable = new Table(database,createArray[2]);
+                controller.setExecuteStatus(true); //创建成功
+            }
+            else {
+                System.out.println(tableAttribute);
+                Table newTable = new Table(database,createArray[2],tableAttribute);
+                controller.setExecuteStatus(true); //创建成功
+            }
+        }
+        else{
+            controller.setExecuteStatus(false);
+            controller.setErrorMessage("You need to choose DATABASE fist");
+        }
     }
 }
 

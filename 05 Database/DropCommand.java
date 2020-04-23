@@ -8,7 +8,7 @@ public class DropCommand extends CommandType{
     private boolean checkDrop(String incoming){
         String[] incomingArray = incoming.split(" ");
         // Check DROP
-        if (incomingArray[0].equals("drop")){
+        if (incomingArray[0].toLowerCase().equals("drop")){
             super.setCommandType("drop");
         }
         else{
@@ -21,8 +21,8 @@ public class DropCommand extends CommandType{
             return false;
         }
         // Check TABLE or DATABASE
-        if (!incomingArray[1].equals("table") && !incomingArray[1].equals("database")){
-            super.setParsingError("Unexpected token [" + incomingArray[1] + "], should be 'TABLE' or 'DATABASE'");
+        if (!incomingArray[1].toLowerCase().equals("table") && !incomingArray[1].toLowerCase().equals("database")){
+            super.setParsingError("Unexpected token [" + incomingArray[1] + "] in DROP, should be 'TABLE' or 'DATABASE'");
             return false;
         }
         return true;

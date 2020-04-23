@@ -8,7 +8,7 @@ public class AlterCommand extends CommandType{
     private boolean checkAlter(String incoming){
         String[] incomingArray = incoming.split(" ");
         // Check Alter
-        if (incomingArray[0].equals("alter")){
+        if (incomingArray[0].toLowerCase().equals("alter")){
             super.setCommandType("alter");
         }
         else{
@@ -22,13 +22,13 @@ public class AlterCommand extends CommandType{
             return false;
         }
         // Check table
-        if (!incomingArray[1].equals("table")){
-            super.setParsingError("Unexpected token [" + incomingArray[1] + "], should be 'TABLE'");
+        if (!incomingArray[1].toLowerCase().equals("table")){
+            super.setParsingError("Unexpected token [" + incomingArray[1] + "] in ALTER, should be 'TABLE'");
             return false;
         }
         // Check AlterationType whether is  ADD or DROP
-        if (!incomingArray[3].equals("add") && !incomingArray[3].equals("drop"))  {
-            super.setParsingError("Unexpected token [" + incomingArray[3] + "], should be 'ADD' or 'Drop'");
+        if (!incomingArray[3].toLowerCase().equals("add") && !incomingArray[3].toLowerCase().equals("drop"))  {
+            super.setParsingError("Unexpected token [" + incomingArray[3] + "] in ALTER, should be 'ADD' or 'Drop'");
             return false;
         }
         return true;

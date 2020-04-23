@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 public class CommandType {
     private String commandType;
     private boolean isValid;
@@ -9,7 +11,7 @@ public class CommandType {
         parsingError = "";
     }
 
-    public boolean getIsCommandType(){
+    public boolean getIsValid(){
         return isValid;
     }
 
@@ -31,5 +33,9 @@ public class CommandType {
 
     public void setCommandType(String type){
         commandType = type;
+    }
+
+    public void executeCommand(DBController controller) throws IOException {
+
     }
 }

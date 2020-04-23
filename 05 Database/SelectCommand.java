@@ -10,16 +10,22 @@ public class SelectCommand extends CommandType{
     private boolean checkSelect(String incoming){
         String[] incomingArray = incoming.split(" ");
         // Check SELECT
-        if (incomingArray[0].equals("select")){
+        if (incomingArray[0].toLowerCase().equals("select")){
             super.setCommandType("select");
         }
         else{
             return false;
         }
+        // Check whether SELECT command has correct elements
+        int length = incomingArray.length;
+        if ( length < 4){
+            super.setParsingError("Incorrect elements in SELECT command, expect >= 4");
+            return false;
+        }
         // Check FROM
         int position = 0;
         for(int i = 0;i < incomingArray.length;i++){
-            if (incomingArray[i].equals("from")){
+            if (incomingArray[i].toLowerCase().equals("from")){
                 position =i;
             }
         }
@@ -33,7 +39,7 @@ public class SelectCommand extends CommandType{
             return false;
         }
         if (position + 2 < incomingArray.length){
-            if (!incomingArray[position + 2].equals("where")) {
+            if (!incomingArray[position + 2].toLowerCase().equals("where")) {
                 super.setParsingError("Expected WHERE in SELECT");
                 return false;
             }
