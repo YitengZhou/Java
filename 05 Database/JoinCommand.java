@@ -1,6 +1,14 @@
-import java.util.Arrays;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class JoinCommand extends CommandType{
+
+    private String firstTableName;
+    private String secondTableName;
+    private String firstAttribute;
+    private String secondAttribute;
+
     public JoinCommand(String incoming){
         boolean isJoinCommand = checkJoin(incoming);
         super.setCommandValid(isJoinCommand);
@@ -35,6 +43,62 @@ public class JoinCommand extends CommandType{
             super.setParsingError("Unexpected token [" + incomingArray[6] + "] in JOIN, should be 'AND'");
             return false;
         }
+        this.firstTableName = incomingArray[1];
+        this.secondTableName = incomingArray[3];
+        this.firstAttribute = incomingArray[5];
+        this.secondAttribute = incomingArray[7];
         return true;
+    }
+
+    public void executeCommand(DBController controller) throws IOException {
+        // Check database and table
+        if (!checkDatabase(controller)) return;
+        File firstTableFile = new File("./database" + File.separator + controller.getCurrentDatabase()
+                + File.separator + firstTableName + ".txt");
+        File secondTableFile = new File("./database" + File.separator + controller.getCurrentDatabase()
+                + File.separator + secondTableName + ".txt");
+        if (!checkTable(controller,firstTableFile)) return;
+        if (!checkTable(controller,secondTableFile)) return;
+        Table firstTable = new Table(firstTableFile);
+        Table secondTable = new Table(secondTableFile);
+        int firstColumn = -1;
+        for (int i = 0;i<firstTable.getColumns();i++){
+            if (firstTable.getTableData().get(0)[i].equals(firstAttribute)){
+                firstColumn = i;
+            }
+        }
+        int secondColumn = -1;
+        for (int i = 0;i<secondTable.getColumns();i++){
+            if (secondTable.getTableData().get(0)[i].equals(secondAttribute)){
+                secondColumn = i;
+            }
+        }
+        if (secondColumn==-1||firstColumn==-1){
+            controller.setErrorMessage("Incorrect Attributes when JOIN table, check[" +
+                    firstAttribute + "]"+ " and [" + secondAttribute +"]");
+            controller.setExecuteStatus(false);
+            return;
+        }
+        ArrayList<Integer> joinList = firstTable.joinTable(secondTable,firstColumn,secondColumn);
+        String outputTable = "id\t";
+        for (int i = 1;i<firstTable.getColumns();i++){
+            outputTable += firstTableName + "." + firstTable.getTableData().get(0)[i] +"\t";
+        }
+        for (int i = 1;i<secondTable.getColumns();i++){
+            outputTable += secondTableName + "." + secondTable.getTableData().get(0)[i] +"\t";
+        }
+        outputTable += "\n";
+        for (int i = 0;i<joinList.size()/2;i++){
+            outputTable += i + 1 +"\t";
+            for (int j = 1;j<firstTable.getColumns();j++){
+                outputTable += firstTable.getTableData().get(joinList.get(2*i))[j] +"\t";
+            }
+            for (int k = 1;k<secondTable.getColumns();k++){
+                outputTable += secondTable.getTableData().get(joinList.get(2*i+1))[k] +"\t";
+            }
+            outputTable += "\n";
+        }
+        controller.setOutputMessage(outputTable);
+        controller.setExecuteStatus(true);
     }
 }

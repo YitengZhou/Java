@@ -1,4 +1,9 @@
+import java.io.File;
+
 public class DropCommand extends CommandType{
+
+    private String dropType;
+    private String dropName;
 
     public DropCommand(String incoming){
         boolean isDropCommand = checkDrop(incoming);
@@ -25,7 +30,28 @@ public class DropCommand extends CommandType{
             super.setParsingError("Unexpected token [" + incomingArray[1] + "] in DROP, should be 'TABLE' or 'DATABASE'");
             return false;
         }
+        this.dropType = incomingArray[1];
+        this.dropName = incomingArray[2];
         return true;
     }
 
+    public void executeCommand(DBController controller){
+        if (dropType.toLowerCase().equals("table")){
+            // Check database and table
+            if (!checkDatabase(controller)) return;
+            File dropTable = new File("./database" + File.separator + controller.getCurrentDatabase()
+                    + File.separator + dropName + ".txt");
+            if (!checkTable(controller,dropTable)) return;
+            dropTable.delete();
+            controller.setExecuteStatus(true);
+        }
+        else{
+            File deleteDatabase = new File("./database" + File.separator + dropName);
+            if (!checkTable(controller,deleteDatabase)) return;
+            deleteDatabase.delete();
+            if (dropName.toLowerCase().equals(controller.getCurrentDatabase())){
+                controller.setCurrentDatabase(null);
+            }
+        }
+    }
 }

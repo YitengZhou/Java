@@ -30,13 +30,17 @@ class DBServer
         while(true) {
             try{
                 String incoming= in.readLine();
+                String outputMessage ="";
                 System.out.println("Server get message: " + incoming);
                 controller.handleQuery(incoming);
                 // 处理字符串中的空格
-                if (controller.getParseStatues()){
-                    incoming = "valid\n" + incoming + '\n'; // 注意\n
+                if (controller.getParseStatues()&&controller.getExecuteStatus()){
+                    outputMessage = "Server response OK\n";
+                    if (controller.getOutputMessage()!=null){
+                        outputMessage += controller.getOutputMessage();
+                    }
                 }
-                out.write(incoming + EOT + "\n");
+                out.write(outputMessage + EOT + "\n");
                 out.flush();
                 if (incoming.equals("end")) break;
             }

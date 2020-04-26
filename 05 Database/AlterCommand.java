@@ -1,4 +1,11 @@
+import java.io.File;
+import java.io.IOException;
+
 public class AlterCommand extends CommandType{
+
+    private String alterationType;
+    private String tableName;
+    private String attributeName;
 
     public AlterCommand(String incoming){
         boolean isAlterCommand = checkAlter(incoming);
@@ -31,7 +38,39 @@ public class AlterCommand extends CommandType{
             super.setParsingError("Unexpected token [" + incomingArray[3] + "] in ALTER, should be 'ADD' or 'Drop'");
             return false;
         }
+        this.tableName = incomingArray[2];
+        this.alterationType = incomingArray[3];
+        this.attributeName = incomingArray[4];
         return true;
     }
 
+    public void executeCommand(DBController controller) throws IOException {
+        if (!checkDatabase(controller)) return;
+        File tableFile = new File("./database" + File.separator + controller.getCurrentDatabase()
+                + File.separator + tableName + ".txt");
+        if (!checkTable(controller,tableFile)) return;
+        Table table = new Table(tableFile);
+        if (alterationType.toLowerCase().equals("add")){
+            table.alterTableAdd(attributeName);
+            table.saveTable(tableFile);
+            controller.setExecuteStatus(true);
+            return;
+        }
+        else{
+            int column = -1;
+            for (int i = 0;i<table.getColumns();i++){
+                if (table.getTableData().get(0)[i].equals(attributeName)){
+                    column = i;
+                }
+            }
+            if (column==-1){
+                controller.setErrorMessage("Incorrect Attributes when ALTER table, check[" + attributeName + "]");
+                controller.setExecuteStatus(false);
+                return;
+            }
+            table.alterTableDrop(column);
+        }
+        table.saveTable(tableFile);
+        controller.setExecuteStatus(true);
+    }
 }

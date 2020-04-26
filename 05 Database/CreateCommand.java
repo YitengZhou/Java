@@ -76,8 +76,8 @@ public class CreateCommand extends CommandType{
             controller.setExecuteStatus(true); // 创建成功？
         }
         else{
-            controller.setExecuteStatus(false);
             controller.setErrorMessage("You have already CREATE this database : " + createArray[2]);
+            controller.setExecuteStatus(false);
         }
     }
 
@@ -89,7 +89,6 @@ public class CreateCommand extends CommandType{
                 controller.setExecuteStatus(true); //创建成功
             }
             else {
-                System.out.println(tableAttribute);
                 Table newTable = new Table(database,createArray[2],tableAttribute);
                 controller.setExecuteStatus(true); //创建成功
             }

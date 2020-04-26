@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 
 public class CommandType {
@@ -37,5 +38,26 @@ public class CommandType {
 
     public void executeCommand(DBController controller) throws IOException {
 
+    }
+
+    // Check database whether used
+    public boolean checkDatabase(DBController controller){
+        // Check current database
+        if (controller.getCurrentDatabase()==null){
+            controller.setErrorMessage("You need to USE Database first");
+            controller.setExecuteStatus(false);
+            return false;
+        }
+        return true;
+    }
+
+    // Check table whether exist in current database
+    public boolean checkTable(DBController controller,File tableFile){
+        if (!tableFile.exists()){
+            controller.setErrorMessage("This table [" + tableFile.getName() + "] not exist in current database");
+            controller.setExecuteStatus(false);
+            return false;
+        }
+        return true;
     }
 }

@@ -36,6 +36,8 @@
     CreAte table xxx (a, b, c, d, e, f, g, h);
     CreAte TAble xxx (a, b, c, d, e, f, g, h);
 
+    create table (name, gender);还是错误的
+
 // DROP
     drop; // 没有错误信息
     drop ;
@@ -112,3 +114,36 @@
    JOIN movies AND roles ON id movie_id;
 
 // 大小写
+
+insert into course values (zhou, 50);
+insert into course values (ma, 60);
+insert into course values (zhouyiteng, 70);
+insert into course values (lalal, 80);
+
+select * from course where id >= 60;
+select * from course where (id >= 60) AND (name == zhou);
+select * from course where ((id <= 90) AND (id >= 60)) AND (name == zhou);
+select * from course where ((id >= 60) AND (id <= 90)) OR (name == zhou);
+select * from course where (name == zhou) OR ((id >= 60) AND (id <= 90));
+select name, id from course where (name == zhou) OR ((id >= 60) AND (id <= 90));
+
+update course set mark = 21 where name == x;
+update course set mark = 21 , name = uu where name == x;
+update course set mark = 21, name = uu where name == x;
+update course set mark = 21 , name = uu where name == zhou;
+update course set mark = 21 , test = uu where name == zhou;
+
+update course set mark = 99 where name == lalal;
+update course set name = zhou where mark == 99;
+update course set name = zhouyiteng, mark = 100 where name == zhou;
+update course set name = zhouyiteng, mark = 100 where name == zhou;
+
+// condition 错误
+delete from course where name == zhouyiteng;
+delete from xxxx where b == 3;
+delete from xxxx where b == 3 or a == 3 or c == 3;
+
+JOIN school AND a ON id AND mark;
+
+ALTER TABLE school add x;
+ALTER TABLE school drop x;

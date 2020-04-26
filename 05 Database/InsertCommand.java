@@ -1,5 +1,10 @@
-//可能可以改成AttributeList类中的方法
+import java.io.File;
+import java.io.IOException;
+
 public class InsertCommand extends CommandType{
+
+    private String insertValue;
+    private String tableName;
 
     public InsertCommand(String incoming){
         boolean isInsertCommand = checkInsert(incoming);
@@ -36,6 +41,8 @@ public class InsertCommand extends CommandType{
             super.setParsingError("Expected <ValueList> in INSERT");
             return false;
         }
+        this.tableName = incomingArray[2];
+        this.insertValue = incoming.substring(incoming.indexOf('(')+1,incoming.indexOf(')'));
         return true;
     }
     private boolean isValueList(String incoming){
@@ -45,7 +52,7 @@ public class InsertCommand extends CommandType{
             super.setParsingError("Incorrectly ( or )");
             return false;
         }
-        for (int i = leftFlag;i<incoming.length();i++){ //可能需要更改,字符串问题
+        for (int i = leftFlag;i<incoming.length();i++){
             if (incoming.charAt(i) == ' ' &&
                     Character.isLetter(incoming.charAt(i - 1)) &&
                     Character.isLetter(incoming.charAt(i + 1))){
@@ -54,5 +61,23 @@ public class InsertCommand extends CommandType{
             }
         }
         return true;
+    }
+
+    public void executeCommand(DBController controller) throws IOException {
+        // Check database and table
+        if (!checkDatabase(controller)) return;
+        File tableFile = new File("./database" + File.separator + controller.getCurrentDatabase()
+                + File.separator + tableName + ".txt");
+        if (!checkTable(controller,tableFile)) return;
+
+        Table table =new Table(tableFile);
+        if (table.getColumns() != 1 + insertValue.split(",").length){
+            controller.setErrorMessage("The number of insert value is not equal to table");
+            controller.setExecuteStatus(false);
+            return;
+        }
+        insertValue = table.handleLine(insertValue);
+        table.insertRowIntoTable(tableFile,insertValue);
+        controller.setExecuteStatus(true);
     }
 }

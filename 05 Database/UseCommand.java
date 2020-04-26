@@ -31,16 +31,11 @@ public class UseCommand extends CommandType{
     }
 
     public void executeCommand(DBController controller) {
-        File[] database = controller.getDatabase();
-        for (int i = 0 ;i<database.length;i++ ){
-            if (database[i].getName().equals(useDatabase)){
-                controller.setCurrentDatabase(useDatabase);
-                controller.setExecuteStatus(true);
-                // Set all file in this database
-                File tableFiles = new File("./database"+ File.separator + useDatabase);
-                controller.setTable(tableFiles.listFiles());
-                return; // 创建成功？
-            }
+        File databaseFolder = new File("./database" + File.separator +useDatabase);
+        if (databaseFolder.exists() && databaseFolder.isDirectory()){
+            controller.setCurrentDatabase(useDatabase);
+            controller.setExecuteStatus(true);
+            return;
         }
         controller.setExecuteStatus(false);
         controller.setErrorMessage("You need to CREATE database [" + useDatabase + "] before USE it");

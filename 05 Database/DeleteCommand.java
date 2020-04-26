@@ -1,6 +1,12 @@
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DeleteCommand extends CommandType{
+    private String tableName;
+    private Condition condition;
+
     public DeleteCommand(String incoming){
         boolean isDeleteCommand = checkDelete(incoming);
         super.setCommandValid(isDeleteCommand);
@@ -37,6 +43,22 @@ public class DeleteCommand extends CommandType{
             super.setParsingError(con.getErrorMessage());
             return false;
         }
+        this.tableName = incomingArray[2];
+        this.condition = con;
         return true;
+    }
+
+    public void executeCommand(DBController controller) throws IOException {
+        // Check database and table
+        if (!checkDatabase(controller)) return;
+        File tableFile = new File("./database" + File.separator + controller.getCurrentDatabase()
+                + File.separator + tableName + ".txt");
+        if (!checkTable(controller,tableFile)) return;
+        Table table = new Table(tableFile);
+        ArrayList<String[]> resultTable = condition.getTable(table);
+        condition.printTable(resultTable);
+        table.deleteTable(resultTable);
+        table.saveTable(tableFile);
+        controller.setExecuteStatus(true);
     }
 }

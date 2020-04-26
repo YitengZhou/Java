@@ -4,11 +4,9 @@ public class DBController {
     private boolean parseStatus;
     private boolean executeStatus;
     private String errorMessage;
-    private DBParsing parsing; //可能需要更改
+    private String outputMessage;
+    private DBParsing parsing;
     private String currentDatabase;
-    private String currentTable;
-    private File[] database;
-    private File[] table;
 
     public DBController(String incoming){
         this.parseStatus = false;
@@ -22,7 +20,6 @@ public class DBController {
         if (!databaseFolder.exists()){
             databaseFolder.mkdir();
         }
-        this.database = databaseFolder.listFiles();
     }
 
     public void handleQuery(String incoming) throws IOException {
@@ -45,19 +42,7 @@ public class DBController {
 
     private void executeCommand(CommandType command) throws IOException {
         command.executeCommand(this);
-        if (executeStatus){
-            // Update database and table
-            File databaseFolder = new File("./database");
-            this.database = databaseFolder.listFiles();
-            if (currentDatabase!=null){
-                File tableFolder = new File("./database"+ File.separator + currentDatabase);
-                this.table = tableFolder.listFiles();
-                for (File t : table){
-                    System.out.println(t.getName());
-                }
-            }
-        }
-        else {
+        if (!executeStatus){
             System.out.println(errorMessage);
         }
     }
@@ -124,6 +109,14 @@ public class DBController {
         this.errorMessage = errorMessage;
     }
 
+    public String getOutputMessage() {
+        return outputMessage;
+    }
+
+    public void setOutputMessage(String outputMessage) {
+        this.outputMessage = outputMessage;
+    }
+
     public DBParsing getParsing(){
         return parsing;
     }
@@ -140,27 +133,4 @@ public class DBController {
         this.currentDatabase = DatabasePath;
     }
 
-    public String getCurrentTable() {
-        return currentTable;
-    }
-
-    public void setCurrentTable(String currentTable) {
-        this.currentTable = currentTable;
-    }
-
-    public File[] getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(File[] database) {
-        this.database = database;
-    }
-
-    public File[] getTable(){
-        return table;
-    }
-
-    public void setTable(File[] table){
-        this.table = table;
-    }
 }
