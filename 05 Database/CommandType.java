@@ -54,7 +54,7 @@ public class CommandType {
     // Check table whether exist in current database
     public boolean checkTable(DBController controller,File tableFile){
         if (!tableFile.exists()){
-            controller.setErrorMessage("This table [" + tableFile.getName() + "] not exist in current database");
+            controller.setErrorMessage("This table [" + tableFile.getName().split("\\.")[0] + "] not exist in current database");
             controller.setExecuteStatus(false);
             return false;
         }

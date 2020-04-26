@@ -45,6 +45,10 @@ public class Condition {
             newCopy.add(getConditionTable(conditionArray[maxPriorityElement],conditionArray[maxPriorityElement+1],conditionArray[maxPriorityElement+2],table));
             priority.put(maxPriorityElement,-1);
         }
+        // Error
+        if (errorMessage!=null){
+            return null;
+        }
         // Merge table
         if (sequence.size()>0){
             for (int i = 0;i<sequence.size();i++){
@@ -89,7 +93,6 @@ public class Condition {
         if (first.size()==1){
             return second;
         }
-
         ArrayList<String[]> newTable = new ArrayList<>();
         newTable.add(first.get(0));
         int flag = 1;
@@ -184,7 +187,15 @@ public class Condition {
         }
     }
 
+    // Could deal with <name Like 'an'> and <name Like an>
     private void likeCondition(int firstColumn,String second,Table table, ArrayList<String[]> newTable){
+        if (checkNumerical(second)) {
+            errorMessage = "Expected textual String in LIKE";
+            return;
+        }
+        if (second.charAt(0)=='\'' && second.charAt(second.length()-1)=='\''){
+            second = second.substring(1,second.length()-1);
+        }
         for (int i = 1;i<table.getTableData().size();i++){
             if (table.getTableData().get(i)[firstColumn].contains(second)){
                 newTable.add(table.getTableData().get(i));
@@ -194,6 +205,10 @@ public class Condition {
 
     private void compareCondition(int firstColumn,String operator, String second,Table table, ArrayList<String[]> newTable){
         for (int i = 1;i<table.getTableData().size();i++){
+            if (!checkNumerical(table.getTableData().get(i)[firstColumn])){
+                errorMessage = "Attribute cannot be converted to number";
+                return;
+            }
             int columnValue = Integer.parseInt(table.getTableData().get(i)[firstColumn]);
             int secondValue = Integer.parseInt(second);
             if (operator.equals(">")){
@@ -217,6 +232,22 @@ public class Condition {
                 }
             }
         }
+    }
+
+    private boolean checkNumerical(String strToFloat){
+        int dotNumber = 0;
+        for (int i = 0;i<strToFloat.length();i++){
+            if (!Character.isDigit(strToFloat.charAt(i))){
+                return false;
+            }
+            else if (strToFloat.charAt(i)=='.'){
+                dotNumber++;
+            }
+        }
+        if (dotNumber>1){
+            return false;
+        }
+        return true;
     }
 
     private int findColumn(String first, Table table){

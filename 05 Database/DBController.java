@@ -8,10 +8,12 @@ public class DBController {
     private DBParsing parsing;
     private String currentDatabase;
 
-    public DBController(String incoming){
+    public DBController() throws IOException {
         this.parseStatus = false;
         this.executeStatus = false;
         this.errorMessage = "";
+        this.outputMessage = "";
+        this.currentDatabase = "";
         initialiseDatabaseFolder();
     }
 
@@ -23,31 +25,34 @@ public class DBController {
     }
 
     public void handleQuery(String incoming) throws IOException {
-        String query = preprocessIncoming(incoming);
-        parseStatus = checkQueryIsValid(incoming); // parse失败直接跳出
+        String query = processPreIncoming(incoming);
+        parseStatus = checkQueryIsValid(incoming);
+        if (!parseStatus){
+            return;
+        }
         DBParsing parsing = new DBParsing(query);
         for (CommandType com : parsing.getTotalCommandType()){
-//            System.out.println(com.getClass().getName() + " : "+ com.getIsValid());
             if (!com.getCommandType().equals("")) {
                 if (com.getIsValid() && parseStatus){
-                    System.out.println("Server will execute " + com.getCommandType());
-                    executeCommand(com);
+                    com.executeCommand(this);
                 }
                 else {
-                    System.out.println(com.getParsingError());
+                    this.errorMessage = com.getParsingError();
                 }
+                this.outputMessage = processPostIncoming(outputMessage);
+                return;
             }
         }
     }
 
-    private void executeCommand(CommandType command) throws IOException {
-        command.executeCommand(this);
-        if (!executeStatus){
-            System.out.println(errorMessage);
+    // Replace spaces in the string with '^'
+    private String processPreIncoming(String incoming) {
+        // Handle Leading space
+        int count =0;
+        while (incoming.charAt(count)==' '){
+            count++;
         }
-    }
-
-    private String preprocessIncoming(String incoming) {
+        incoming = incoming.substring(count,incoming.length());
         String query = "";
         int quota = 0;
         // Handle ';' and space in 'String'
@@ -65,21 +70,63 @@ public class DBController {
                 query += incoming.charAt(i);
             }
         }
-        if (quota % 2 == 1 ){
-            errorMessage = "Incorrect ' in query";
-        }
         return query;
+    }
+
+    // Replace '^' in the output with space ' '
+    private String processPostIncoming(String outputMessage){
+        String postOutputMessage = "";
+        for (int i = 0;i<outputMessage.length();i++){
+            if (outputMessage.charAt(i)=='^'){
+                postOutputMessage += " ";
+            }
+            else{
+                postOutputMessage += outputMessage.charAt(i);
+            }
+        }
+        return postOutputMessage;
     }
 
     /* Check whether the entered query is valid */
     public boolean checkQueryIsValid(String incoming){
         if (incoming.length()<2) {
+            this.errorMessage = "Query too short";
             return false;
         }
         if (incoming.charAt(incoming.length()-1) != ';'){
+            this.errorMessage = "Semi colon missing at end of line";
+            return false;
+        }
+        if (!checkSymbolsIsValid(incoming)){
             return false;
         }
         if (incoming.charAt(incoming.length()-1) == ';' && incoming.charAt(incoming.length()-2) == ' '){
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkSymbolsIsValid(String incoming){
+        int leftBracket = 0;
+        int rightBracket = 0;
+        int quotaNumber = 0;
+        for (int i = 0;i<incoming.length();i++){
+            if (incoming.charAt(i) == '\''){
+                quotaNumber++;
+            }
+            else if (incoming.charAt(i) == '('){
+                leftBracket++;
+            }
+            else if (incoming.charAt(i) == ')'){
+                rightBracket++;
+            }
+        }
+        if (leftBracket!=rightBracket){
+            this.errorMessage = "Incorrect bracket ( ) in query";
+            return false;
+        }
+        if (quotaNumber%2!=0){
+            this.errorMessage = "Incorrect quota number ' in query ";
             return false;
         }
         return true;

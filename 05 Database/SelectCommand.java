@@ -88,6 +88,12 @@ public class SelectCommand extends CommandType{
         else {
             resultTable = table.getTableData();
         }
+        // ERROR Convert strings to numbers
+        if (resultTable==null){
+            controller.setErrorMessage(condition.getErrorMessage());
+            controller.setExecuteStatus(false);
+            return;
+        }
         String outputTable = "";
         // attributeList is *
         if (attributeList.length == 1 && attributeList[0].equals("*")){
@@ -106,7 +112,6 @@ public class SelectCommand extends CommandType{
         // attributeList is wildAttributeList
         else{
             ArrayList<Integer> number = new ArrayList<>();
-            number.add(0);
             for (int i = 0;i<attributeList.length;i++){
                 for (int j = 0;j<resultTable.get(0).length;j++){
                     if (attributeList[i].equals(resultTable.get(0)[j])){
@@ -116,8 +121,8 @@ public class SelectCommand extends CommandType{
                 }
             }
             // Check attributeList whether all in table
-            if (number.size()!=attributeList.length+1){
-                controller.setErrorMessage("SELECT <attributeList> not all in Table");
+            if (number.size()!=attributeList.length){
+                controller.setErrorMessage("SELECT attribute does not exist in Table");
                 controller.setExecuteStatus(false);
                 return;
             }

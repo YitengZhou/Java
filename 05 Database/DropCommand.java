@@ -48,9 +48,13 @@ public class DropCommand extends CommandType{
         else{
             File deleteDatabase = new File("./database" + File.separator + dropName);
             if (!checkTable(controller,deleteDatabase)) return;
+            File[] files = deleteDatabase.listFiles();
+            for (int i = 0;i<files.length;i++){
+                files[i].delete();
+            }
             deleteDatabase.delete();
             if (dropName.toLowerCase().equals(controller.getCurrentDatabase())){
-                controller.setCurrentDatabase(null);
+                controller.setCurrentDatabase("");
             }
         }
     }
