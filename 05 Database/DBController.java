@@ -8,23 +8,27 @@ public class DBController {
     private DBParsing parsing;
     private String currentDatabase;
 
-    public DBController() throws IOException {
-        this.parseStatus = false;
-        this.executeStatus = false;
-        this.errorMessage = "";
-        this.outputMessage = "";
+    // Initialize the DBController
+    public DBController() {
+        resetController();
         this.currentDatabase = "";
-        initialiseDatabaseFolder();
-    }
-
-    private void initialiseDatabaseFolder(){
+        // Create database folder in this dir
         File databaseFolder = new File("./database");
         if (!databaseFolder.exists()){
             databaseFolder.mkdir();
         }
     }
 
+    private void resetController(){
+        this.parseStatus = false;
+        this.executeStatus = false;
+        this.errorMessage = "";
+        this.outputMessage = "";
+    }
+
+    // Handle incoming query
     public void handleQuery(String incoming) throws IOException {
+        resetController();
         String query = processPreIncoming(incoming);
         parseStatus = checkQueryIsValid(incoming);
         if (!parseStatus){
@@ -43,9 +47,10 @@ public class DBController {
                 return;
             }
         }
+        this.errorMessage = "Invalid query";
     }
 
-    // Replace spaces in the string with '^'
+    // Replace spaces in the string with '^' and
     private String processPreIncoming(String incoming) {
         // Handle Leading space
         if (incoming.length()>0){
@@ -64,6 +69,7 @@ public class DBController {
             }
             if (incoming.charAt(i)=='\''){
                 quota++;
+                continue;
             }
             if (quota % 2 == 1 && incoming.charAt(i) == ' '){
                 query += '^';
@@ -91,18 +97,15 @@ public class DBController {
 
     /* Check whether the entered query is valid */
     public boolean checkQueryIsValid(String incoming){
-        if (incoming.length()<2) {
+        if (incoming.length() < 3) {
             this.errorMessage = "Query too short";
             return false;
         }
-        if (incoming.charAt(incoming.length()-1) != ';'){
+        if (incoming.indexOf(';') < 0){
             this.errorMessage = "Semi colon missing at end of line";
             return false;
         }
         if (!checkSymbolsIsValid(incoming)){
-            return false;
-        }
-        if (incoming.charAt(incoming.length()-1) == ';' && incoming.charAt(incoming.length()-2) == ' '){
             return false;
         }
         return true;

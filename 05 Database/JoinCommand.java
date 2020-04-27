@@ -80,25 +80,27 @@ public class JoinCommand extends CommandType{
             return;
         }
         ArrayList<Integer> joinList = firstTable.joinTable(secondTable,firstColumn,secondColumn);
-        String outputTable = "id\t";
+        StringBuilder outputTable = new StringBuilder("id,");
         for (int i = 1;i<firstTable.getColumns();i++){
-            outputTable += firstTableName + "." + firstTable.getTableData().get(0)[i] +"\t";
+            outputTable.append(firstTableName).append(".").append(firstTable.getTableData().get(0)[i]).append(",");
         }
         for (int i = 1;i<secondTable.getColumns();i++){
-            outputTable += secondTableName + "." + secondTable.getTableData().get(0)[i] +"\t";
+            outputTable.append(secondTableName).append(".").append(secondTable.getTableData().get(0)[i]).append(",");
         }
-        outputTable += "\n";
+        outputTable.append("\n");
         for (int i = 0;i<joinList.size()/2;i++){
-            outputTable += i + 1 +"\t";
+            outputTable.append(i+1).append(",");
             for (int j = 1;j<firstTable.getColumns();j++){
-                outputTable += firstTable.getTableData().get(joinList.get(2*i))[j] +"\t";
+                String outputString = firstTable.getTableData().get(joinList.get(2*i))[j];
+                outputTable.append(outputString).append(",");
             }
             for (int k = 1;k<secondTable.getColumns();k++){
-                outputTable += secondTable.getTableData().get(joinList.get(2*i+1))[k] +"\t";
+                String outputString = secondTable.getTableData().get(joinList.get(2 * i + 1))[k];
+                outputTable.append(outputString).append(",");
             }
-            outputTable += "\n";
+            outputTable.append("\n");
         }
-        controller.setOutputMessage(outputTable);
+        controller.setOutputMessage(outputTable.toString());
         controller.setExecuteStatus(true);
     }
 }

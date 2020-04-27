@@ -43,19 +43,23 @@ public class DropCommand extends CommandType{
                     + File.separator + dropName + ".txt");
             if (!checkTable(controller,dropTable)) return;
             dropTable.delete();
-            controller.setExecuteStatus(true);
         }
         else{
-            File deleteDatabase = new File("./database" + File.separator + dropName);
-            if (!checkTable(controller,deleteDatabase)) return;
-            File[] files = deleteDatabase.listFiles();
+            File dropDatabase = new File("./database" + File.separator + dropName);
+            if (!dropDatabase.exists() || !dropDatabase.isDirectory()){
+                controller.setErrorMessage("This database [" + dropName + "] not exist");
+                controller.setExecuteStatus(false);
+                return;
+            }
+            File[] files = dropDatabase.listFiles();
             for (int i = 0;i<files.length;i++){
                 files[i].delete();
             }
-            deleteDatabase.delete();
+            dropDatabase.delete();
             if (dropName.toLowerCase().equals(controller.getCurrentDatabase())){
                 controller.setCurrentDatabase("");
             }
         }
+        controller.setExecuteStatus(true);
     }
 }

@@ -29,6 +29,7 @@ public class Condition {
                     }
                 }
                 if (!containFlag){
+                    errorMessage = "[" + conditionArray[i] + "] is not in this table";
                     return null;
                 }
             }

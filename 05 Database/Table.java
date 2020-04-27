@@ -36,7 +36,7 @@ public class Table {
 
     public Table(File tableFile) throws IOException {
         FileReader reader = new FileReader(tableFile);
-        BufferedReader bufferedReader =new BufferedReader(reader);
+        BufferedReader bufferedReader = new BufferedReader(reader);
         String firstLine = bufferedReader.readLine();
         this.tableStringData.add(firstLine);
         String[] headTitle = firstLine.split(",");
@@ -44,17 +44,16 @@ public class Table {
         this.columns = headTitle.length;
         String nextLine = "";
         int count = 0;
-        while ((nextLine=bufferedReader.readLine())!=null){
+        while ((nextLine = bufferedReader.readLine()) != null) {
             this.tableStringData.add(nextLine);
             count++;
             String[] row = nextLine.split(",");
             this.tableData.add(row);
         }
-        if (count==0){
-            this.rows =0;
-        }
-        else{
-            this.rows = Integer.parseInt(tableData.get(tableData.size()-1)[0]);
+        if (count == 0) {
+            this.rows = 0;
+        } else {
+            this.rows = Integer.parseInt(tableData.get(tableData.size() - 1)[0]);
         }
     }
 

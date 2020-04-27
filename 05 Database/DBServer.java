@@ -33,10 +33,11 @@ class DBServer
                 System.out.println("Server get message: " + incoming);
                 controller.handleQuery(incoming);
                 if (controller.getParseStatues()&&controller.getExecuteStatus()){
-                    outputMessage = "Server response OK\n";
                     if (!controller.getOutputMessage().equals("")){
-                        outputMessage += controller.getOutputMessage();
-                        controller.setOutputMessage("");
+                        outputMessage = setType(controller.getOutputMessage());
+                    }
+                    else{
+                        outputMessage = "Server response OK\n";
                     }
                 }
                 else {
@@ -49,5 +50,38 @@ class DBServer
                 System.err.println(ioe);
             }
         }
+    }
+
+    // Make the output table layout beautiful
+    private static String setType(String outputTable){
+        System.out.println(outputTable);
+        String[] tableRows = outputTable.split("\n");
+        String[] headRow = tableRows[0].split(",");
+        int[] maxLength = new int[headRow.length];
+        for (int i = 0;i<tableRows.length;i++){
+            String[] row = tableRows[i].split(",");
+            for (int j = 0;j<row.length;j++){
+                if (maxLength[j]<row[j].length()){
+                    maxLength[j]=row[j].length();
+                }
+            }
+        }
+        for (int i = 0;i<headRow.length;i++){
+            maxLength[i] = ((maxLength[i]/8)+1)*8;
+        }
+        StringBuilder neatTable = new StringBuilder();
+        for (String tableRow : tableRows) {
+            String[] row = tableRow.split(",");
+            for (int j = 0; j < row.length; j++) {
+                neatTable.append(row[j]);
+                int cell = row[j].length();
+                do{
+                    neatTable.append('\t');
+                    cell += 8;
+                } while (cell < maxLength[j]);
+            }
+            neatTable.append('\n');
+        }
+        return neatTable.toString();
     }
 }

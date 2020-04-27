@@ -80,7 +80,6 @@ public class SelectCommand extends CommandType{
         File tableFile = new File("./database" + File.separator + controller.getCurrentDatabase()
                 + File.separator + tableName + ".txt");
         if (!checkTable(controller,tableFile)) return;
-
         Table table = new Table(tableFile);
         ArrayList<String[]> resultTable;
         if (hasCondition){
@@ -94,19 +93,14 @@ public class SelectCommand extends CommandType{
             controller.setExecuteStatus(false);
             return;
         }
-        String outputTable = "";
+        StringBuilder outputTable = new StringBuilder();
         // attributeList is *
         if (attributeList.length == 1 && attributeList[0].equals("*")){
             for (int i=0;i<resultTable.size();i++){
                 for (int j=0;j<resultTable.get(i).length;j++){
-                    if (resultTable.get(i)[j].length()>8){
-                        outputTable += resultTable.get(i)[j] + "\t";
-                    }
-                    else{
-                        outputTable += resultTable.get(i)[j] + "\t\t";
-                    }
+                    outputTable.append(resultTable.get(i)[j]).append(",");
                 }
-                outputTable += "\n";
+                outputTable.append("\n");
             }
         }
         // attributeList is wildAttributeList
@@ -116,6 +110,7 @@ public class SelectCommand extends CommandType{
                 for (int j = 0;j<resultTable.get(0).length;j++){
                     if (attributeList[i].equals(resultTable.get(0)[j])){
                         number.add(j);
+                        System.out.println(number.get(0));
                         break;
                     }
                 }
@@ -128,17 +123,12 @@ public class SelectCommand extends CommandType{
             }
             for (int i=0;i<resultTable.size();i++){
                 for (int j=0;j<number.size();j++){
-                    if (resultTable.get(i)[number.get(j)].length()>8){
-                        outputTable += resultTable.get(i)[number.get(j)] + "\t";
-                    }
-                    else{
-                        outputTable += resultTable.get(i)[number.get(j)] + "\t\t";
-                    }
+                    outputTable.append(resultTable.get(i)[number.get(j)]).append(",");
                 }
-                outputTable += "\n";
+                outputTable.append("\n");
             }
         }
-        controller.setOutputMessage(outputTable);
+        controller.setOutputMessage(outputTable.toString());
         controller.setExecuteStatus(true);
     }
 }
