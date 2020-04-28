@@ -9,11 +9,10 @@ public class AttributeList {
     }
 
     private boolean isAttributeList(String[] incomingArray){
-        String[] attributeList = new String[incomingArray.length];
         for (int i = 0; i < incomingArray.length-1;i++){
             int length = incomingArray[i].length();
             if (incomingArray[i].charAt(length-1) != ','){
-                errorMessage = "Incorrectly ',' in AttributeList";
+                errorMessage = "Incorrectly ',' or space in AttributeList";
                 return false;
             }
             this.attributeList[i] = incomingArray[i].substring(0,length-1);

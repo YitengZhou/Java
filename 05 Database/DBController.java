@@ -1,3 +1,4 @@
+// This class could control incoming query and output message
 import java.io.*;
 
 public class DBController {
@@ -5,7 +6,6 @@ public class DBController {
     private boolean executeStatus;
     private String errorMessage;
     private String outputMessage;
-    private DBParsing parsing;
     private String currentDatabase;
 
     // Initialize the DBController
@@ -19,6 +19,7 @@ public class DBController {
         }
     }
 
+    // Set all parameters to default
     private void resetController(){
         this.parseStatus = false;
         this.executeStatus = false;
@@ -29,21 +30,19 @@ public class DBController {
     // Handle incoming query
     public void handleQuery(String incoming) throws IOException {
         resetController();
-        String query = processPreIncoming(incoming);
         parseStatus = checkQueryIsValid(incoming);
-        if (!parseStatus){
-            return;
-        }
+        if (!parseStatus) return;
+        String query = processPreIncoming(incoming);
         DBParsing parsing = new DBParsing(query);
         for (CommandType com : parsing.getTotalCommandType()){
             if (!com.getCommandType().equals("")) {
-                if (com.getIsValid() && parseStatus){
+                if (com.getCommandValid()){
                     com.executeCommand(this);
+                    this.outputMessage = processPostIncoming(outputMessage);
                 }
                 else {
                     this.errorMessage = com.getParsingError();
                 }
-                this.outputMessage = processPostIncoming(outputMessage);
                 return;
             }
         }
@@ -53,36 +52,37 @@ public class DBController {
     // Replace spaces in the string with '^' and
     private String processPreIncoming(String incoming) {
         // Handle Leading space
-        if (incoming.length()>0){
-            int count =0;
-            while (incoming.charAt(count)==' '){
-                count++;
-            }
-            incoming = incoming.substring(count,incoming.length());
+        int count =0;
+        while (incoming.charAt(count)==' '){
+            count++;
         }
+        incoming = incoming.substring(count);
         // Handle ';' and space in 'String'
-        String query = "";
+        StringBuilder query = new StringBuilder();
         int quota = 0;
         for (int i = 0;i < incoming.length();i++){
             if (incoming.charAt(i)==';'){
-                return query;
+                return query.toString();
             }
             if (incoming.charAt(i)=='\''){
                 quota++;
                 continue;
             }
             if (quota % 2 == 1 && incoming.charAt(i) == ' '){
-                query += '^';
+                query.append('^');
             }
             else {
-                query += incoming.charAt(i);
+                query.append(incoming.charAt(i));
             }
         }
-        return query;
+        return query.toString();
     }
 
     // Replace '^' in the output with space ' '
     private String processPostIncoming(String outputMessage){
+        if (outputMessage.equals("")){
+            return outputMessage;
+        }
         String postOutputMessage = "";
         for (int i = 0;i<outputMessage.length();i++){
             if (outputMessage.charAt(i)=='^'){
@@ -92,11 +92,12 @@ public class DBController {
                 postOutputMessage += outputMessage.charAt(i);
             }
         }
+        postOutputMessage = setLayout(postOutputMessage);
         return postOutputMessage;
     }
 
     /* Check whether the entered query is valid */
-    public boolean checkQueryIsValid(String incoming){
+    private boolean checkQueryIsValid(String incoming){
         if (incoming.length() < 3) {
             this.errorMessage = "Query too short";
             return false;
@@ -111,6 +112,7 @@ public class DBController {
         return true;
     }
 
+    /* Check bracket and quota in query */
     private boolean checkSymbolsIsValid(String incoming){
         int leftBracket = 0;
         int rightBracket = 0;
@@ -137,12 +139,40 @@ public class DBController {
         return true;
     }
 
-    public boolean getParseStatues(){
-        return parseStatus;
+    // Make the output table layout beautiful
+    private String setLayout(String outputTable){
+        String[] tableRows = outputTable.split("\n");
+        String[] headRow = tableRows[0].split(",");
+        int[] maxLength = new int[headRow.length];
+        for (int i = 0;i<tableRows.length;i++){
+            String[] row = tableRows[i].split(",");
+            for (int j = 0;j<row.length;j++){
+                if (maxLength[j]<row[j].length()){
+                    maxLength[j]=row[j].length();
+                }
+            }
+        }
+        for (int i = 0;i<headRow.length;i++){
+            maxLength[i] = ((maxLength[i]/8)+1)*8;
+        }
+        StringBuilder neatTable = new StringBuilder();
+        for (String tableRow : tableRows) {
+            String[] row = tableRow.split(",");
+            for (int j = 0; j < row.length; j++) {
+                neatTable.append(row[j]);
+                int cell = row[j].length();
+                do{
+                    neatTable.append('\t');
+                    cell += 8;
+                } while (cell < maxLength[j]);
+            }
+            neatTable.append('\n');
+        }
+        return neatTable.toString();
     }
 
-    public void setParseStatus(boolean status){
-        this.parseStatus = status;
+    public boolean getParseStatues(){
+        return parseStatus;
     }
 
     public boolean getExecuteStatus(){
@@ -169,14 +199,6 @@ public class DBController {
         this.outputMessage = outputMessage;
     }
 
-    public DBParsing getParsing(){
-        return parsing;
-    }
-
-    public void setParsing(DBParsing parsing){
-        this.parsing = parsing;
-    }
-
     public String getCurrentDatabase() {
         return currentDatabase;
     }
@@ -184,5 +206,4 @@ public class DBController {
     public void setCurrentDatabase(String DatabasePath){
         this.currentDatabase = DatabasePath;
     }
-
 }

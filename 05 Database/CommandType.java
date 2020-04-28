@@ -3,21 +3,21 @@ import java.io.IOException;
 
 public class CommandType {
     private String commandType;
-    private boolean isValid;
-    private String parsingError; // 错误提示
+    private boolean commandValid;
+    private String parsingError;
 
     public CommandType(){
         commandType ="";
-        isValid = false;
+        commandValid = false;
         parsingError = "";
     }
 
-    public boolean getIsValid(){
-        return isValid;
+    public boolean getCommandValid(){
+        return commandValid;
     }
 
     public void setCommandValid(boolean fact){
-        isValid = fact;
+        commandValid = fact;
     }
 
     public String getParsingError(){
@@ -36,13 +36,10 @@ public class CommandType {
         commandType = type;
     }
 
-    public void executeCommand(DBController controller) throws IOException {
+    public void executeCommand(DBController controller) throws IOException {}
 
-    }
-
-    // Check database whether used
+    // Check current database whether used
     public boolean checkDatabase(DBController controller){
-        // Check current database
         if (controller.getCurrentDatabase()==null){
             controller.setErrorMessage("You need to USE Database first");
             controller.setExecuteStatus(false);

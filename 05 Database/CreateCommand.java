@@ -1,3 +1,4 @@
+// This class could parse and execute CREATE Command
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -45,7 +46,7 @@ public class CreateCommand extends CommandType{
             int leftFlag = incoming.indexOf('(');
             int rightFlag = incoming.indexOf(')');
             if (leftFlag == -1 || rightFlag == -1){
-                super.setParsingError("Incorrectly ( or )");
+                super.setParsingError("Incorrectly ( or ) in attributeList when CREATE");
                 return false;
             }
             String[] attributeList= Arrays.copyOfRange(incomingArray,3,incomingArray.length);
@@ -69,7 +70,7 @@ public class CreateCommand extends CommandType{
         }
     }
 
-    private void createDatabase(DBController controller)throws IOException{
+    private void createDatabase(DBController controller) {
         File databaseFolder = new File("./database" +File.separator + createArray[2]);
         if (!databaseFolder.exists()){
             databaseFolder.mkdir();
@@ -83,7 +84,7 @@ public class CreateCommand extends CommandType{
 
     private void createTable(DBController controller) throws IOException {
         String database = controller.getCurrentDatabase();
-        if (database!=null){
+        if (!database.equals("")){
             if (tableAttribute==null){
                 Table newTable = new Table(database,createArray[2]);
                 controller.setExecuteStatus(true); //创建成功

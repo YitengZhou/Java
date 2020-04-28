@@ -2,7 +2,7 @@
 CREATE DATABASE markbook;
 USE markbook;
 
-CREATE TABLE marks (name, mark, pass);
+CREATE TABLE marks (name, mark, pass) ;
 
 INSERT INTO marks VALUES ('Steve', 65, true);
 INSERT INTO marks VALUES ('Dave', 55, true);
@@ -74,6 +74,7 @@ JOIN movies AND roles ON id AND movie_id;
 DROP TABLE actors;
 SELECT * FROM actors;
 DROP DATABASE imdb;
+DROP DATABASE markbook;
 USE imdb;
 
 // 非空字典无法删除
@@ -91,3 +92,9 @@ SELECT * FROM actors awards > 10;
 SELECT * FROM actors WHERE name LIKE 10;
       SELECT * FROM actors WHERE awards > 10;
 USE ebay;
+
+create database test;
+create table name1 x, y;
+create table name2 (x, y);
+create table name3 ( x, y );
+create table name4 ( x , y );

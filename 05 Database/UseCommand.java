@@ -1,3 +1,4 @@
+// This class could parse and execute USE Command
 import java.io.File;
 
 public class UseCommand extends CommandType{
@@ -9,10 +10,6 @@ public class UseCommand extends CommandType{
     }
 
     private boolean checkUse(String incoming){
-        if (incoming.length()<3){
-            super.setParsingError("Need more information for query");
-            return false;
-        }
         String[] incomingArray = incoming.split(" ");
         // Check USE
         if (incomingArray[0].toLowerCase().equals("use")){
