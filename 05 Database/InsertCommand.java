@@ -1,3 +1,4 @@
+/** This class could parse and execute INSERT Command */
 import java.io.File;
 import java.io.IOException;
 
@@ -45,6 +46,7 @@ public class InsertCommand extends CommandType{
         this.insertValue = incoming.substring(incoming.indexOf('(')+1,incoming.indexOf(')'));
         return true;
     }
+
     private boolean isValueList(String incoming){
         int leftFlag = incoming.indexOf('(');
         int rightFlag = incoming.indexOf(')');
@@ -76,7 +78,6 @@ public class InsertCommand extends CommandType{
             controller.setExecuteStatus(false);
             return;
         }
-        insertValue = table.handleLine(insertValue);
         table.insertRowIntoTable(tableFile,insertValue);
         controller.setExecuteStatus(true);
     }

@@ -1,4 +1,4 @@
-// This class could control incoming query and output message
+/** This class could control incoming query and output message */
 import java.io.*;
 
 public class DBController {

@@ -1,23 +1,42 @@
+/** This class could identify AttributeList */
+import java.util.ArrayList;
+
 public class AttributeList {
     private boolean valid;
     private String errorMessage;
+    private ArrayList<String> tempList = new ArrayList<>();
+    private String stringList="";
     private String[] attributeList;
 
     public AttributeList (String[] incomingArray){
-        this.attributeList = new String[incomingArray.length];
         this.valid = isAttributeList(incomingArray);
     }
 
+    // Handle attribute list, robust with the space and identify incorrect ','
     private boolean isAttributeList(String[] incomingArray){
-        for (int i = 0; i < incomingArray.length-1;i++){
-            int length = incomingArray[i].length();
-            if (incomingArray[i].charAt(length-1) != ','){
-                errorMessage = "Incorrectly ',' or space in AttributeList";
-                return false;
+        // handle with multiple spaces
+        for (String s : incomingArray) {
+            if (!s.equals("")) {
+                tempList.add(s);
             }
-            this.attributeList[i] = incomingArray[i].substring(0,length-1);
         }
-        this.attributeList[incomingArray.length-1]= incomingArray[incomingArray.length-1];
+        for (int i = 1;i<tempList.size();i++){
+            if (tempList.get(i).charAt(0)!=','){
+                if (tempList.get(i-1).charAt(tempList.get(i-1).length()-1)!=','){
+                    errorMessage = "Incorrectly ',' in AttributeList";
+                    return false;
+                }
+            }
+        }
+        for (String s : tempList) {
+            stringList += s;
+        }
+        // Check , number whether correct
+        if (stringList.contains(",,")){
+            errorMessage = "Incorrectly ',' in AttributeList";
+            return false;
+        }
+        attributeList = stringList.split(",");
         return true;
     }
 
@@ -29,7 +48,11 @@ public class AttributeList {
         return errorMessage;
     }
 
-    public String[] getAttributeList() {
-        return attributeList;
+    public ArrayList<String> getAttributeList() {
+        return tempList;
+    }
+
+    public String getStringList(){
+        return stringList;
     }
 }

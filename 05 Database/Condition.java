@@ -1,3 +1,4 @@
+/** This class could identify Condition and create result table according to the condition */
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,10 +12,10 @@ public class Condition {
         this.conditionArray = incomingArray;
     }
 
+    // Get result table in different condition
     public ArrayList<String[]> getTable(Table table){
         ArrayList<ArrayList<String[]>> newCopy = new ArrayList<>();
-        HashMap<Integer,Integer> priority = new HashMap<>();
-        priority = handlePriority(conditionArray);
+        HashMap<Integer,Integer> priority = handlePriority(conditionArray);
         for (int i = 0;i<conditionArray.length;i++){
             if (i % 2==0){
                 conditionArray[i] = handleString(conditionArray[i]);
@@ -62,6 +63,7 @@ public class Condition {
         }
     }
 
+    // Merge table following AND/OR
     private ArrayList<String[]> mergeTable(ArrayList<String[]> first,ArrayList<String[]> second, String operator){
         if (operator.toLowerCase().equals("and")){
             return executeAndTable(first,second);
@@ -71,6 +73,7 @@ public class Condition {
         }
     }
 
+    // Merge table following AND
     private ArrayList<String[]> executeAndTable(ArrayList<String[]> first,ArrayList<String[]> second){
         ArrayList<String[]> newTable = new ArrayList<>();
         newTable.add(first.get(0));
@@ -89,6 +92,7 @@ public class Condition {
         return newTable;
     }
 
+    // Merge table following OR
     private ArrayList<String[]> executeOrTable(ArrayList<String[]> first,ArrayList<String[]> second){
         // first table is empty
         if (first.size()==1){
@@ -118,18 +122,18 @@ public class Condition {
         return newTable;
     }
 
-    // test print table 需要修改
-    public void printTable(ArrayList<String[]> table){
-        String s="";
+    // testing function print table
+    private void printTable(ArrayList<String[]> table){
+        StringBuilder s= new StringBuilder();
         for (int i = 0;i<table.size();i++){
             for (int j = 0;j<table.get(i).length;j++){
-                s += table.get(i)[j] + "!";
+                s.append(table.get(i)[j]).append("!");
             }
-            s += "\n";
+            s.append("\n");
         }
-        System.out.println(s);
     }
 
+    // Handle priority based on bracket
     private HashMap<Integer,Integer> handlePriority(String[] conditionArray){
         HashMap<Integer,Integer> priority = new HashMap<>();
         int bracket = 0;
@@ -145,6 +149,7 @@ public class Condition {
         return priority;
     }
 
+    // Get max priority element from priority map
     private int getMaxPriority(HashMap<Integer,Integer> priority){
         int maxPriority = priority.get(0);
         int maxPriorityElement = 0;
@@ -157,6 +162,7 @@ public class Condition {
         return maxPriorityElement;
     }
 
+    // Get table in one condition
     private ArrayList<String[]> getConditionTable(String first, String operator,String second,Table table){
         ArrayList<String[]> newTable = new ArrayList<>();
         newTable.add(table.getTableData().get(0)); // Heading column
@@ -173,6 +179,7 @@ public class Condition {
         return newTable;
     }
 
+    // Get table in equal condition
     private void equalCondition(int firstColumn,String operator, String second,Table table, ArrayList<String[]> newTable){
         for (int i = 1;i<table.getTableData().size();i++){
             if (operator.equals("==")){
@@ -188,7 +195,7 @@ public class Condition {
         }
     }
 
-    // Could deal with <name Like 'an'> and <name Like an>
+    // Get table in like condition, could deal with <name Like 'an'> and <name Like an>
     private void likeCondition(int firstColumn,String second,Table table, ArrayList<String[]> newTable){
         if (checkNumerical(second)) {
             errorMessage = "Expected textual String in LIKE";
@@ -204,14 +211,15 @@ public class Condition {
         }
     }
 
+    // Get table in compare condition, compare int and float
     private void compareCondition(int firstColumn,String operator, String second,Table table, ArrayList<String[]> newTable){
         for (int i = 1;i<table.getTableData().size();i++){
             if (!checkNumerical(table.getTableData().get(i)[firstColumn])){
                 errorMessage = "Attribute cannot be converted to number";
                 return;
             }
-            int columnValue = Integer.parseInt(table.getTableData().get(i)[firstColumn]);
-            int secondValue = Integer.parseInt(second);
+            Float columnValue = Float.parseFloat(table.getTableData().get(i)[firstColumn]);
+            Float secondValue = Float.parseFloat(second);
             if (operator.equals(">")){
                 if (columnValue > secondValue){
                     newTable.add(table.getTableData().get(i));
@@ -235,10 +243,11 @@ public class Condition {
         }
     }
 
+    // Check whether string is numerical
     private boolean checkNumerical(String strToFloat){
         int dotNumber = 0;
         for (int i = 0;i<strToFloat.length();i++){
-            if (!Character.isDigit(strToFloat.charAt(i))){
+            if (Character.isLetter(strToFloat.charAt(i))){
                 return false;
             }
             else if (strToFloat.charAt(i)=='.'){
@@ -251,6 +260,7 @@ public class Condition {
         return true;
     }
 
+    // Find column number if this column in table
     private int findColumn(String first, Table table){
         String[] firstLine = table.getTableData().get(0);
         for (int i = 0; i<firstLine.length;i++){
@@ -261,6 +271,7 @@ public class Condition {
         return 0;
     }
 
+    // Handle space
     private String handleString(String s){
         String newString = "";
         for (int i = 0;i < s.length();i++){
@@ -274,13 +285,12 @@ public class Condition {
         return newString;
     }
 
+    // Identify whether incoming is condition
     private boolean isCondition(String[] incomingArray){
-        int leftBracket = 0;
-        int rightBracket = 0;
         for (int i = 0;i<incomingArray.length;i++){
             // Check operator
             if (i % 4 == 1 && !isOperator(incomingArray[i])){
-                errorMessage = "Incorrectly operator in CONDITION";
+                errorMessage = "Incorrectly operator in CONDITION, please use ==, >=, <=, >, <, !=, Like";
                 return false;
             }
             // Check AND/OR in CONDITION
@@ -288,19 +298,11 @@ public class Condition {
                 errorMessage = "Incorrectly AND/OR in CONDITION";
                 return false;
             }
-            for (int j = 0;j<incomingArray[i].length();j++){
-                if (incomingArray[i].charAt(j) == '(') leftBracket++;
-                if (incomingArray[i].charAt(j) == ')') rightBracket++;
-            }
-        }
-        // Check '(' and ')'
-        if (leftBracket!=rightBracket){
-            errorMessage = "Incorrectly '(', ')' in CONDITION";
-            return false;
         }
         return true;
     }
 
+    // Identify whether incoming is operator
     private boolean isOperator(String str){
         if (str.equals("==")||str.equals(">")||str.equals("<")|| str.toLowerCase().equals("like") ||
                 str.equals(">=")||str.equals("<=")||str.equals("!=")){
@@ -309,6 +311,7 @@ public class Condition {
         return false;
     }
 
+    // Identify whether incoming is AND/OR
     private boolean isAndOr(String str){
         if (str.toLowerCase().equals("and") || str.toLowerCase().equals("or")){
             return true;

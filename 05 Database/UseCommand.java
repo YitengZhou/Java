@@ -1,4 +1,4 @@
-// This class could parse and execute USE Command
+/** This class could parse and execute USE Command */
 import java.io.File;
 
 public class UseCommand extends CommandType{

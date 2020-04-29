@@ -1,3 +1,4 @@
+/** This class could parse and execute UPDATE Command */
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +45,6 @@ public class UpdateCommand extends CommandType{
             return false;
         }
         // Check CONDITION
-        int conditionPosition = incomingArray.length-position-1;
         String[] condition = Arrays.copyOfRange(incomingArray,position+1,incomingArray.length);
         Condition con = new Condition(condition);
         if (!con.getValid()){
@@ -72,17 +72,22 @@ public class UpdateCommand extends CommandType{
         if (!checkTable(controller,tableFile)) return;
         Table table = new Table(tableFile);
         ArrayList<String[]> resultTable = condition.getTable(table);
-
+        // Deal with wrong resultTable;
+        if (resultTable==null){
+            controller.setErrorMessage(condition.getErrorMessage());
+            controller.setExecuteStatus(false);
+            return;
+        }
         // Check update information
         ArrayList<String[]> updateList = new ArrayList<>();
         int updateNumber = 0;
-        for (int i = 0; i<nameValueList.length;i++){
-            String[] updateColumn = nameValueList[i].split("=");
-            for (int j=0;j<resultTable.get(0).length;j++){
-                if (updateColumn[0].equals(resultTable.get(0)[j])){
+        for (String s : nameValueList) {
+            String[] updateColumn = s.split("=");
+            for (int j = 0; j < resultTable.get(0).length; j++) {
+                if (updateColumn[0].equals(resultTable.get(0)[j])) {
                     updateNumber++;
-                    for (int k=1;k<resultTable.size();k++){
-                        updateList.add(new String[] {resultTable.get(k)[0],updateColumn[0],updateColumn[1]});
+                    for (int k = 1; k < resultTable.size(); k++) {
+                        updateList.add(new String[]{resultTable.get(k)[0], updateColumn[0], updateColumn[1]});
                     }
                 }
             }

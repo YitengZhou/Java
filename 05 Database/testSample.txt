@@ -12,7 +12,7 @@ INSERT INTO marks VALUES ('Clive', 20, false);
 SELECT * FROM marks;
 SELECT * FROM marks WHERE name != 'Dave';
 SELECT * FROM marks WHERE pass == true;
-UPDATE marks SET mark = 38 WHERE name == 'Clive';
+UPDATE marks SET mark =  38 WHERE name == 'Clive';
 
 SELECT * FROM marks WHERE name == 'Clive';
 DELETE FROM marks WHERE name == 'Dave';
@@ -94,7 +94,44 @@ SELECT * FROM actors WHERE name LIKE 10;
 USE ebay;
 
 create database test;
-create table name1 x, y;
+use test;
+create table name1 x, y;  未use
 create table name2 (x, y);
-create table name3 ( x, y );
-create table name4 ( x , y );
+create table name3 (x,y);
+create table name3 (x,y);
+create table name4 (x,     y);
+create table name5 ( x, y );
+create table name6 ( x , y );
+create table name7 ( x , , y );
+重复创建
+
+alter空表//ok
+alter table name add x;
+alter table name add x;
+alter table name drop x;
+空
+alter table name drop x;
+alter table s drop x;
+
+插入空表
+create table name (name,age,true);
+INSERT INTO name VALUES ('Bob', 35, false);
+INSERT INTO name VALUES ('Bob' , 35, false);
+INSERT INTO name VALUES ('Bob'  35, false);
+INSERT INTO name VALUES ('Bob'    , 35, false);
+INSERT INTO name VALUES ('Bob'    ,, 35, false);
+SELECT spouse FROM actors where;
+
+SELECT * FROM actors WHERE ((awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian'))) OR (awards == 3);
+SELECT * FROM actors WHERE (awards == 3) OR ((awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian')));
+
+create table exam (name,mark);
+INSERT INTO exam VALUES ('zhou1',50.4);
+INSERT INTO exam VALUES ('zhou2',50.6);
+INSERT INTO exam VALUES ('zhou3',70.6);
+INSERT INTO exam VALUES ('zhou4',65.4);
+INSERT INTO exam VALUES ('zhou1',50.4);
+INSERT INTO exam VALUES ('zhou2',50.6);
+INSERT INTO exam VALUES ('zhou3',70.6);
+INSERT INTO exam VALUES ('zhou4',65.4);
+select * from exam where mark > 50.5;

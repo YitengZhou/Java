@@ -1,3 +1,4 @@
+/** This class could parse and execute ALTER Command */
 import java.io.File;
 import java.io.IOException;
 
@@ -21,7 +22,6 @@ public class AlterCommand extends CommandType{
         else{
             return false;
         }
-
         // Check whether Alter command has correct elements
         int length = incomingArray.length;
         if ( length != 5){
@@ -50,12 +50,14 @@ public class AlterCommand extends CommandType{
                 + File.separator + tableName + ".txt");
         if (!checkTable(controller,tableFile)) return;
         Table table = new Table(tableFile);
+        // Add alter command
         if (alterationType.toLowerCase().equals("add")){
             table.alterTableAdd(attributeName);
             table.saveTable(tableFile);
             controller.setExecuteStatus(true);
             return;
         }
+        // Drop alter command
         else{
             int column = -1;
             for (int i = 0;i<table.getColumns();i++){

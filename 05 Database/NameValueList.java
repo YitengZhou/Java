@@ -1,4 +1,4 @@
-// SubCommand
+/** This class could identify name value list */
 public class NameValueList {
     private boolean valid;
     private String errorMessage;
@@ -9,9 +9,9 @@ public class NameValueList {
 
     // Identity mark = 50 , name = x or  mark = 50, name = x
     private boolean isNameValueList(String[] incomingArray){
-        String totalNameValueList="";
-        for (int i = 0;i<incomingArray.length;i++){
-            totalNameValueList += incomingArray[i];
+        StringBuilder totalNameValueList= new StringBuilder();
+        for (String s : incomingArray) {
+            totalNameValueList.append(s);
         }
         int equalSymbol = 0;
         int commaSymbol = 0;
@@ -23,7 +23,7 @@ public class NameValueList {
             errorMessage = "Incorrectly '='/',' in NameValueList";
             return false;
         }
-        nameValueList=totalNameValueList.split(",");
+        nameValueList= totalNameValueList.toString().split(",");
         return true;
     }
 

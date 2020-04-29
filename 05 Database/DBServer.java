@@ -1,4 +1,4 @@
-// This class is DBServer and communicate with DBClient
+/** This class is DBServer and communicate with DBClient */
 import java.io.*;
 import java.net.*;
 

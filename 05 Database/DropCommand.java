@@ -1,3 +1,4 @@
+/** This class could parse and execute DROP Command */
 import java.io.File;
 
 public class DropCommand extends CommandType{
@@ -56,6 +57,7 @@ public class DropCommand extends CommandType{
                 files[i].delete();
             }
             dropDatabase.delete();
+            // If current database = delete database, reset current database
             if (dropName.toLowerCase().equals(controller.getCurrentDatabase())){
                 controller.setCurrentDatabase("");
             }

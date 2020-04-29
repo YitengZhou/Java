@@ -1,3 +1,4 @@
+/** This class could parse and execute JOIN Command */
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,18 +62,8 @@ public class JoinCommand extends CommandType{
         if (!checkTable(controller,secondTableFile)) return;
         Table firstTable = new Table(firstTableFile);
         Table secondTable = new Table(secondTableFile);
-        int firstColumn = -1;
-        for (int i = 0;i<firstTable.getColumns();i++){
-            if (firstTable.getTableData().get(0)[i].equals(firstAttribute)){
-                firstColumn = i;
-            }
-        }
-        int secondColumn = -1;
-        for (int i = 0;i<secondTable.getColumns();i++){
-            if (secondTable.getTableData().get(0)[i].equals(secondAttribute)){
-                secondColumn = i;
-            }
-        }
+        int firstColumn = getColumn(firstTable,firstAttribute);
+        int secondColumn = getColumn(secondTable,secondAttribute);
         if (secondColumn==-1||firstColumn==-1){
             controller.setErrorMessage("Incorrect Attributes when JOIN table, check[" +
                     firstAttribute + "]"+ " and [" + secondAttribute +"]");
@@ -80,6 +71,24 @@ public class JoinCommand extends CommandType{
             return;
         }
         ArrayList<Integer> joinList = firstTable.joinTable(secondTable,firstColumn,secondColumn);
+        String outputMessage = getOutputTable(firstTable,secondTable,joinList);
+        controller.setOutputMessage(outputMessage);
+        controller.setExecuteStatus(true);
+    }
+
+    // Get attribute column
+    private int getColumn(Table table,String attribute){
+        int column = -1;
+        for (int i = 0;i<table.getColumns();i++){
+            if (table.getTableData().get(0)[i].equals(attribute)){
+                column = i;
+            }
+        }
+        return column;
+    }
+
+    // Join Table to String
+    private String getOutputTable(Table firstTable, Table secondTable,ArrayList<Integer> joinList){
         StringBuilder outputTable = new StringBuilder("id,");
         for (int i = 1;i<firstTable.getColumns();i++){
             outputTable.append(firstTableName).append(".").append(firstTable.getTableData().get(0)[i]).append(",");
@@ -100,7 +109,6 @@ public class JoinCommand extends CommandType{
             }
             outputTable.append("\n");
         }
-        controller.setOutputMessage(outputTable.toString());
-        controller.setExecuteStatus(true);
+        return outputTable.toString();
     }
 }

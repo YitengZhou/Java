@@ -1,3 +1,4 @@
+// This class could parse and execute DELETE Command
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +57,12 @@ public class DeleteCommand extends CommandType{
         if (!checkTable(controller,tableFile)) return;
         Table table = new Table(tableFile);
         ArrayList<String[]> resultTable = condition.getTable(table);
-        condition.printTable(resultTable);
+        // Deal with wrong resultTable;
+        if (resultTable==null){
+            controller.setErrorMessage(condition.getErrorMessage());
+            controller.setExecuteStatus(false);
+            return;
+        }
         table.deleteTable(resultTable);
         table.saveTable(tableFile);
         controller.setExecuteStatus(true);

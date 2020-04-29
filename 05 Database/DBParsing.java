@@ -1,4 +1,4 @@
-// This class could parse query from DBController to generate all grammar in BNF
+/** This class could parse query from DBController to generate all grammar in BNF */
 import java.util.ArrayList;
 
 public class DBParsing {

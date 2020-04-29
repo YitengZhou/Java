@@ -1,3 +1,4 @@
+/** This class could parse and execute SELECT Command */
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -5,13 +6,13 @@ import java.util.Arrays;
 
 public class SelectCommand extends CommandType{
 
-    private boolean hasCondition;
+    private boolean conditionValue;
     private Condition condition;
-    private String[] attributeList;
+    private ArrayList<String> attributeList;
     private String tableName;
 
     public SelectCommand(String incoming){
-        this.hasCondition = false;
+        this.conditionValue = false;
         boolean isSelectCommand = checkSelect(incoming);
         super.setCommandValid(isSelectCommand);
     }
@@ -53,14 +54,13 @@ public class SelectCommand extends CommandType{
                 super.setParsingError("Expected WHERE in SELECT");
                 return false;
             }
-            int conditionPosition = incomingArray.length-position-3;
             String[] condition = Arrays.copyOfRange(incomingArray,position+3,incomingArray.length);
             Condition con = new Condition(condition);
             if (!con.getValid()){
                 super.setParsingError(con.getErrorMessage());
                 return false;
             }
-            this.hasCondition =true;
+            this.conditionValue =true;
             this.condition = con;
         }
         // Check WildAttributeList - * or AttributeList
@@ -82,12 +82,12 @@ public class SelectCommand extends CommandType{
         if (!checkTable(controller,tableFile)) return;
         Table table = new Table(tableFile);
         ArrayList<String[]> resultTable;
-        if (hasCondition){
+        if (conditionValue){
             resultTable = condition.getTable(table);}
         else {
             resultTable = table.getTableData();
         }
-        // ERROR Convert strings to numbers
+        // Deal with wrong resultTable, e.g. ERROR Convert strings to numbers
         if (resultTable==null){
             controller.setErrorMessage(condition.getErrorMessage());
             controller.setExecuteStatus(false);
@@ -95,7 +95,7 @@ public class SelectCommand extends CommandType{
         }
         StringBuilder outputTable = new StringBuilder();
         // attributeList is *
-        if (attributeList.length == 1 && attributeList[0].equals("*")){
+        if (attributeList.size() == 1 && attributeList.get(0).equals("*")){
             for (int i=0;i<resultTable.size();i++){
                 for (int j=0;j<resultTable.get(i).length;j++){
                     outputTable.append(resultTable.get(i)[j]).append(",");
@@ -106,24 +106,23 @@ public class SelectCommand extends CommandType{
         // attributeList is wildAttributeList
         else{
             ArrayList<Integer> number = new ArrayList<>();
-            for (int i = 0;i<attributeList.length;i++){
-                for (int j = 0;j<resultTable.get(0).length;j++){
-                    if (attributeList[i].equals(resultTable.get(0)[j])){
+            for (String s : attributeList) {
+                for (int j = 0; j < resultTable.get(0).length; j++) {
+                    if (s.equals(resultTable.get(0)[j])) {
                         number.add(j);
-                        System.out.println(number.get(0));
                         break;
                     }
                 }
             }
             // Check attributeList whether all in table
-            if (number.size()!=attributeList.length){
+            if (number.size()!=attributeList.size()){
                 controller.setErrorMessage("SELECT attribute does not exist in Table");
                 controller.setExecuteStatus(false);
                 return;
             }
-            for (int i=0;i<resultTable.size();i++){
-                for (int j=0;j<number.size();j++){
-                    outputTable.append(resultTable.get(i)[number.get(j)]).append(",");
+            for (String[] strings : resultTable) {
+                for (Integer integer : number) {
+                    outputTable.append(strings[integer]).append(",");
                 }
                 outputTable.append("\n");
             }

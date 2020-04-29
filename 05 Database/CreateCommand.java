@@ -1,12 +1,11 @@
-// This class could parse and execute CREATE Command
+/** This class could parse and execute CREATE Command */
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class CreateCommand extends CommandType{
 
     private String[] createArray;
-    private String tableAttribute;
+    private String tableAttribute="";
 
     public CreateCommand(String incoming){
         boolean isCreateCommand = checkCreate(incoming);
@@ -28,14 +27,12 @@ public class CreateCommand extends CommandType{
             super.setParsingError("Incorrect elements in CREATE command, expect >= 3");
             return false;
         }
-
         // Check TABLE or DATABASE
         if (!incomingArray[1].toLowerCase().equals("table") &&
                 !incomingArray[1].toLowerCase().equals("database")){
             super.setParsingError("Unexpected token [" + incomingArray[1] + "] in CREATE, should be 'TABLE' or 'DATABASE'");
             return false;
         }
-
         // Check TABLE ( AttributeList )
         if (length > 3 ) {
             if (incomingArray[1].toLowerCase().equals("database")) {
@@ -49,13 +46,13 @@ public class CreateCommand extends CommandType{
                 super.setParsingError("Incorrectly ( or ) in attributeList when CREATE");
                 return false;
             }
-            String[] attributeList= Arrays.copyOfRange(incomingArray,3,incomingArray.length);
+            String[] attributeList= incoming.substring(leftFlag+1,rightFlag).split(" ");
             AttributeList list = new AttributeList(attributeList);
             if (!list.getValid()){
                 super.setParsingError(list.getErrorMessage());
                 return false;
             }
-            this.tableAttribute = incoming.substring(leftFlag+1,rightFlag);
+            this.tableAttribute = list.getStringList();
         }
         this.createArray = incomingArray;
         return true;
@@ -70,11 +67,12 @@ public class CreateCommand extends CommandType{
         }
     }
 
+    // Create DATABASE
     private void createDatabase(DBController controller) {
         File databaseFolder = new File("./database" +File.separator + createArray[2]);
         if (!databaseFolder.exists()){
             databaseFolder.mkdir();
-            controller.setExecuteStatus(true); // 创建成功？
+            controller.setExecuteStatus(true);
         }
         else{
             controller.setErrorMessage("You have already CREATE this database : " + createArray[2]);
@@ -82,22 +80,24 @@ public class CreateCommand extends CommandType{
         }
     }
 
+    // Create TABLE
     private void createTable(DBController controller) throws IOException {
+        if (!checkDatabase(controller)) return;
         String database = controller.getCurrentDatabase();
-        if (!database.equals("")){
-            if (tableAttribute==null){
-                Table newTable = new Table(database,createArray[2]);
-                controller.setExecuteStatus(true); //创建成功
-            }
-            else {
-                Table newTable = new Table(database,createArray[2],tableAttribute);
-                controller.setExecuteStatus(true); //创建成功
-            }
-        }
-        else{
+        String createTableName = "./database" + File.separator + database
+                + File.separator + createArray[2] + ".txt";
+        File tableFile = new File(createTableName);
+        if (tableFile.exists()) {
+            controller.setErrorMessage("This table exist in current database");
             controller.setExecuteStatus(false);
-            controller.setErrorMessage("You need to choose DATABASE fist");
+            return;
         }
+        if (tableAttribute.equals("")) {
+            Table newTable = new Table(createTableName);
+        } else {
+            Table newTable = new Table(createTableName, tableAttribute);
+        }
+        controller.setExecuteStatus(true);
     }
 }
 
