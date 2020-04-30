@@ -31,6 +31,11 @@ public class AttributeList {
         for (String s : tempList) {
             stringList += s;
         }
+        // Check incorrect bracket in attribute list
+        if (stringList.contains("(") || stringList.contains(")")){
+            errorMessage = "Incorrectly ( ) in AttributeList";
+            return false;
+        }
         // Check , number whether correct
         if (stringList.contains(",,")){
             errorMessage = "Incorrectly ',' in AttributeList";
@@ -48,8 +53,8 @@ public class AttributeList {
         return errorMessage;
     }
 
-    public ArrayList<String> getAttributeList() {
-        return tempList;
+    public String[] getAttributeList() {
+        return attributeList;
     }
 
     public String getStringList(){

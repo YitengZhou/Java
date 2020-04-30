@@ -32,7 +32,6 @@ class DBServer
             String incoming = in.readLine();
             String outputMessage = "";
             if (incoming==null) break;
-            System.out.println("Server get message: " + incoming);
             controller.handleQuery(incoming);
             if (controller.getParseStatues() && controller.getExecuteStatus()) {
                 if (!controller.getOutputMessage().equals("")) {

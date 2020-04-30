@@ -1,6 +1,6 @@
 /** This class could identify Condition and create result table according to the condition */
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Stack;
 
 public class Condition {
     private boolean valid;
@@ -14,53 +14,106 @@ public class Condition {
 
     // Get result table in different condition
     public ArrayList<String[]> getTable(Table table){
+        if (!checkElement(table)) return null;
+        Stack<String> conditionStack = new Stack<>();
+        ArrayList<String> orderArray= getOrderArray(conditionArray);
         ArrayList<ArrayList<String[]>> newCopy = new ArrayList<>();
-        HashMap<Integer,Integer> priority = handlePriority(conditionArray);
-        for (int i = 0;i<conditionArray.length;i++){
-            if (i % 2==0){
-                conditionArray[i] = handleString(conditionArray[i]);
+        int tableCount = 0;
+        for (String s : orderArray){
+            if (s.equals(")")){
+                if (!getTableFromStack(conditionStack,newCopy,table)) return null;
+                conditionStack.push("table" + tableCount);
+                tableCount++;
             }
-            // Check whether the condition element is in the table;
+            else {
+                conditionStack.add(s);
+            }
+        }
+        if (!conditionStack.empty()){
+            if (!getTableFromStack(conditionStack,newCopy,table)) return null;
+            conditionStack.push("table" + tableCount);
+        }
+        if (conditionStack.size()==1) return newCopy.get(newCopy.size()-1);
+        else {
+            errorMessage = "Invalid condition";
+            return null;
+        }
+    }
+
+    // Pop element from stack and create new table according to operator/and(or)
+    private boolean getTableFromStack(Stack<String> conditionStack,ArrayList<ArrayList<String[]>> newCopy,Table table){
+        if (conditionStack.size()<3){
+            errorMessage = "Invalid condition";
+            return false;
+        }
+        String right = conditionStack.pop();
+        String operator = conditionStack.pop();
+        String left = conditionStack.pop();
+        if (!conditionStack.empty()) conditionStack.pop();
+        if (isOperator(operator)) {
+            newCopy.add(getConditionTable(left,operator,right,table));
+        }
+        else{
+            newCopy.add(mergeTable(newCopy.get(left.charAt(5)-'0'),newCopy.get(right.charAt(5)-'0'),operator));
+        }
+        if (errorMessage!=null){
+            return false;
+        }
+        return true;
+    }
+
+    // Check whether the condition element is in the table;
+    private boolean checkElement(Table table){
+        if (table.getRows()==-1){
+            errorMessage = "Empty table, you need alter add more column";
+            return false;
+        }
+        for (int i = 0;i<conditionArray.length;i++){
             if (i % 4==0){
                 boolean containFlag = false;
                 for (String s: table.getTableData().get(0)){
-                    if (s.equals(conditionArray[i])){
+                    if (s.equals(handleString(conditionArray[i]))){
                         containFlag = true;
                         break;
                     }
                 }
                 if (!containFlag){
-                    errorMessage = "[" + conditionArray[i] + "] is not in this table";
-                    return null;
+                    errorMessage = "[" + handleString(conditionArray[i]) + "] is not in this table";
+                    return false;
                 }
             }
         }
-        ArrayList<String> sequence= new ArrayList<>();
-        // Get all condition table
-        int loop = priority.size();
-        for (int i = 0;i < loop;i++){
-            int maxPriorityElement = getMaxPriority(priority);
-            // Set AND/OR sequence
-            if (maxPriorityElement+3<conditionArray.length){
-                sequence.add(conditionArray[maxPriorityElement+3]);
+        return true;
+    }
+
+    // Re-order incoming condition to array
+    private ArrayList<String> getOrderArray(String[] conditionArray){
+        ArrayList<String> orderArray= new ArrayList<>();
+        for (String s : conditionArray) {
+            if (s.contains("(")) {
+                int position = 0;
+                for (int j = 0;j<s.length();j++){
+                    if (s.charAt(j)=='('){
+                        orderArray.add("(");
+                        position=j;
+                    }
+                }
+                orderArray.add(s.substring(position+1));
             }
-            newCopy.add(getConditionTable(conditionArray[maxPriorityElement],conditionArray[maxPriorityElement+1],conditionArray[maxPriorityElement+2],table));
-            priority.put(maxPriorityElement,-1);
-        }
-        // Error
-        if (errorMessage!=null){
-            return null;
-        }
-        // Merge table
-        if (sequence.size()>0){
-            for (int i = 0;i<sequence.size();i++){
-                newCopy.set(i+1,mergeTable(newCopy.get(i),newCopy.get(i+1),sequence.get(i)));
+            else if (s.contains(")")) {
+                int position = s.indexOf(')');
+                orderArray.add(s.substring(0,position));
+                for (int j = position;j<s.length();j++){
+                    if (s.charAt(j)==')'){
+                        orderArray.add(")");
+                    }
+                }
             }
-            return newCopy.get(sequence.size());
+            else{
+                orderArray.add(s);
+            }
         }
-        else {
-            return newCopy.get(0);
-        }
+        return orderArray;
     }
 
     // Merge table following AND/OR
@@ -93,6 +146,7 @@ public class Condition {
     }
 
     // Merge table following OR
+    /** Merge table Or is ordered by id */
     private ArrayList<String[]> executeOrTable(ArrayList<String[]> first,ArrayList<String[]> second){
         // first table is empty
         if (first.size()==1){
@@ -111,6 +165,7 @@ public class Condition {
                 }
                 if (secondId < firstId){
                     newTable.add(second.get(j));
+                    flag = j+1;
                 }
                 if (secondId > firstId){
                     flag = j;
@@ -119,10 +174,13 @@ public class Condition {
             }
             newTable.add(first.get(i));
         }
+        for (int j=flag;j<second.size();j++){
+            newTable.add(second.get(j));
+        }
         return newTable;
     }
 
-    // testing function print table
+    // Testing function for printing table
     private void printTable(ArrayList<String[]> table){
         StringBuilder s= new StringBuilder();
         for (int i = 0;i<table.size();i++){
@@ -131,35 +189,7 @@ public class Condition {
             }
             s.append("\n");
         }
-    }
-
-    // Handle priority based on bracket
-    private HashMap<Integer,Integer> handlePriority(String[] conditionArray){
-        HashMap<Integer,Integer> priority = new HashMap<>();
-        int bracket = 0;
-        for (int i = 0;i < conditionArray.length;i++){
-            for (int j = 0;j<conditionArray[i].length();j++){
-                if (conditionArray[i].charAt(j) == '(') bracket++;
-                if (conditionArray[i].charAt(j) == ')') bracket--;
-            }
-            if (i % 4 == 0){
-                priority.put(i,bracket);
-            }
-        }
-        return priority;
-    }
-
-    // Get max priority element from priority map
-    private int getMaxPriority(HashMap<Integer,Integer> priority){
-        int maxPriority = priority.get(0);
-        int maxPriorityElement = 0;
-        for (int i = 0;i<priority.size();i++){
-            if (priority.get(4*i)>maxPriority){
-                maxPriority = priority.get(4*i);
-                maxPriorityElement = 4*i;
-            }
-        }
-        return maxPriorityElement;
+        System.out.println(s.toString());
     }
 
     // Get table in one condition
@@ -287,6 +317,10 @@ public class Condition {
 
     // Identify whether incoming is condition
     private boolean isCondition(String[] incomingArray){
+        if (incomingArray.length<3){
+            errorMessage = "CONDITION is too short";
+            return false;
+        }
         for (int i = 0;i<incomingArray.length;i++){
             // Check operator
             if (i % 4 == 1 && !isOperator(incomingArray[i])){

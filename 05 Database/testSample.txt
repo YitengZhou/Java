@@ -122,8 +122,16 @@ INSERT INTO name VALUES ('Bob'    , 35, false);
 INSERT INTO name VALUES ('Bob'    ,, 35, false);
 SELECT spouse FROM actors where;
 
+// Error
+SELECT * FROM actors WHERE awards > 5 AND nationality == 'British';
+SELECT * FROM actors WHERE ((awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian')));
+
+SELECT * FROM actors WHERE (awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian'));
 SELECT * FROM actors WHERE ((awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian'))) OR (awards == 3);
 SELECT * FROM actors WHERE (awards == 3) OR ((awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian')));
+SELECT * FROM actors WHERE ((nationality == 'British') OR (nationality == 'Australian')) AND ((awards > 10) OR (awards < 5));
+
+SELECT * FROM name WHERE (awards == 3) OR ((awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian')));
 
 create table exam (name,mark);
 INSERT INTO exam VALUES ('zhou1',50.4);
@@ -134,4 +142,4 @@ INSERT INTO exam VALUES ('zhou1',50.4);
 INSERT INTO exam VALUES ('zhou2',50.6);
 INSERT INTO exam VALUES ('zhou3',70.6);
 INSERT INTO exam VALUES ('zhou4',65.4);
-select * from exam where mark > 50.5;
+

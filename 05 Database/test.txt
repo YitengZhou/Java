@@ -6,8 +6,8 @@
    //多个((或者))
 
 // USE
-    use; // 没有错误信息
-    use ; // 没有错误信息
+    use;
+    use ;
     use name;
     use name name;
 
@@ -21,7 +21,7 @@
     create table;
     create name;
     create name name;
-    create table xxx (a ); //出错-已解决
+    create table xxx (a );
     create table xxx ( a );
     create table xxx ( a);
     create table xxx ( a) ; //直接报错-已解决
@@ -37,6 +37,7 @@
     CreAte TAble xxx (a, b, c, d, e, f, g, h);
 
     create table (name, gender);还是错误的
+    create table name ((name, gender));
 
 // DROP
     drop; // 没有错误信息
@@ -60,7 +61,7 @@
 // Insert
     insert into xxx values (a,b,c);
     insert into xxx values (a, b, c);
-    insert into xxx values (a b, c); //应该不报错
+    insert into xxx values (a b, c);
     insert intos xxx values (a,b,c);
     insert into xxx valuess (a,b,c);
     insert into xxx values;
@@ -92,14 +93,16 @@
 
     SELECT * FROM actors WHERE (awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian');
     SELECT * FROM actors WHERE (awards > 5) AND (nationality == 'British') OR (nationality == 'Australian');
+    SELECT * FROM actors WHERE ((awards > 5) AND (nationality == 'British')) OR (nationality == 'Australian');
+
     SELECT * FROM actors WHERE (awards > 5) (nationality == 'British') OR (nationality == 'Australian');
     SELECT * FROM actors WHERE (awards > 5) (nationality == 'British') (nationality == 'Australian');
 
 // update
     UPDATE actors SET age = 45 WHERE name == 'Hugh Grant';
-    UPDATE actors SET age = 45 WHERE name == 'HughGrant'; // 字符串中的空格,可将空格替换为其他字符
+    UPDATE actors SET age = 50 WHERE name == 'HughGrant'; // 字符串中的空格,可将空格替换为其他字符
     UPDATE actors SET age = 45 , zhou = 20 WHERE name == 'HughGrant';
-    UPDATE actors SET age = 45 , zhou = 20 WHERE (awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian'));
+    UPDATE actors SET age = 99 WHERE (awards > 5) AND ((nationality == 'British') OR (nationality == 'Australian'));
 
 // Delete
     DELETE FROM marks WHERE name == 'Dave';
@@ -121,15 +124,21 @@ insert into course values (zhouyiteng, 70);
 insert into course values (lalal, 80);
 
 select * from course where id >= 60;
-select * from course where (id >= 60) AND (name == zhou);
-select * from course where ((id <= 90) AND (id >= 60)) AND (name == zhou);
-select * from course where ((id >= 60) AND (id <= 90)) OR (name == zhou);
-select * from course where (name == zhou) OR ((id >= 60) AND (id <= 90));
-select name, id from course where (name == zhou) OR ((id >= 60) AND (id <= 90));
+select * from course where mark >= 60;
+select * from course where (mark >= 60) AND (name == zhou);
+select * from course where ((mark <= 90) AND (mark >= 60)) AND (name == zhou);
+select * from course where ((mark >= 60) AND (mark <= 90)) OR (name == zhou);
+select * from course where (name == zhou) OR ((mark >= 60) AND (mark <= 90));
+select id, mark from course where (name == zhou) OR ((mark >= 60) AND (mark <= 90));
+select name, mark from course where (name == zhou) OR ((mark >= 60) AND (mark <= 90));
+select name from course where (name == zhou) OR ((mark >= 60) AND (mark <= 90));
+select mark from course where (name == zhou) OR ((mark >= 60) AND (mark <= 90));
 
+//
 update course set mark = 21 where name == x;
-update course set mark = 21 , name = uu where name == x;
-update course set mark = 21, name = uu where name == x;
+update course set mark = 21 where name == zhou;
+update course set mark = 100 , name = uu where name == zhou;
+update course set mark = 21, name = zhou where name == uu;
 update course set mark = 21 , name = uu where name == zhou;
 update course set mark = 21 , test = uu where name == zhou;
 
@@ -147,3 +156,7 @@ JOIN school AND a ON id AND mark;
 
 ALTER TABLE school add x;
 ALTER TABLE school drop x;
+
+new
+( age > 40 ) AND ( ( name == 'Dave' ) OR ( mark < 40 ) )
+( age > 40 ) AND ( name == 'Dave' ) OR ( mark < 40 )

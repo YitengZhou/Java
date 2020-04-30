@@ -59,6 +59,12 @@ public class CreateCommand extends CommandType{
     }
 
     public void executeCommand(DBController controller) throws IOException {
+        // Check table name
+        if (createArray[2].contains("(")){
+            controller.setErrorMessage("Invalid query, may lack table name");
+            controller.setExecuteStatus(false);
+            return;
+        }
         if (createArray[1].toLowerCase().equals("database")){
             createDatabase(controller);
         }

@@ -8,7 +8,7 @@ public class SelectCommand extends CommandType{
 
     private boolean conditionValue;
     private Condition condition;
-    private ArrayList<String> attributeList;
+    private String[] attributeList;
     private String tableName;
 
     public SelectCommand(String incoming){
@@ -95,7 +95,7 @@ public class SelectCommand extends CommandType{
         }
         StringBuilder outputTable = new StringBuilder();
         // attributeList is *
-        if (attributeList.size() == 1 && attributeList.get(0).equals("*")){
+        if (attributeList.length == 1 && attributeList[0].equals("*")){
             for (int i=0;i<resultTable.size();i++){
                 for (int j=0;j<resultTable.get(i).length;j++){
                     outputTable.append(resultTable.get(i)[j]).append(",");
@@ -115,7 +115,7 @@ public class SelectCommand extends CommandType{
                 }
             }
             // Check attributeList whether all in table
-            if (number.size()!=attributeList.size()){
+            if (number.size()!=attributeList.length){
                 controller.setErrorMessage("SELECT attribute does not exist in Table");
                 controller.setExecuteStatus(false);
                 return;

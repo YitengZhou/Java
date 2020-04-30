@@ -38,8 +38,9 @@ public class Table {
         FileReader reader = new FileReader(tableFile);
         BufferedReader bufferedReader = new BufferedReader(reader);
         String firstLine = bufferedReader.readLine();
+        // Identify whether is empty table;
         if (firstLine==null){
-
+            this.rows = -1;
             return;
         }
         this.tableStringData.add(firstLine);
@@ -61,6 +62,7 @@ public class Table {
         }
     }
 
+    // Handle the space in line
     private String handleLine(String line){
         String newLine = "";
         for (int i = 0; i< line.length();i++){
